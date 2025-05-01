@@ -144,46 +144,6 @@ type IntrinsicType = (
 
 
 #-----------------------------------------------------------------------------
-# Buffer Type
-#-----------------------------------------------------------------------------
-
-# The core buffer type.
-# 
-# A buffer represents core device memory. It has no concept of length or out
-# of bounds access. The only operation it supports is indexing. Indexing a 
-# buffer will return the value of the given type at that location, or it may
-# segfault if the index out-of-bounds.
-# 
-# Most code will interact with the `Memory` type, not `buffer`.
-#
-# User code cannot allocate or free a `buffer`. It must use the `Memory`
-# type instead.
-#
-# Mis-use of the buffer type is undefined behavior.
-type Buffer[T]:
-	
-	# Retrieve the element at the specified index.
-	#
-	# For example, `value = buffer[0]`.
-	#
-	# The compiler/runtime does not check this access for out-of-bounds, so 
-	# it must be used safely by the calling code, or undefined behavior may 
-	# result.
-	def __getitem__(self, index: Uint64) -> T:
-		pass
-
-	# Assign a value at the specified index.
-	#
-	# For example, `buffer[0] = value`.
-	#
-	# The compiler/runtime does not check this access for out-of-bounds, so 
-	# it must be used safely by the calling code, or undefined behavior may 
-	# result.
-	def __setitem__(self, index: Uint64, value: T) -> T:
-		pass
-
-
-#-----------------------------------------------------------------------------
 # Memory Type
 #-----------------------------------------------------------------------------
 
@@ -191,24 +151,12 @@ type Buffer[T]:
 #
 # Note that the size of the underlying device buffer in bytes is "at least" 
 # large enough to hold `n = length` elements, but it may be greater.
-type Memory[T]:
+type Memory[T is IntrinsicType]:
 
 	# The length of the memory buffer in number of `T` elements.
 	#
 	# This value is `readonly` and cannot be changed by the user.
 	readonly length: Uint64
-
-	# The buffer holding at-least `length` elements.
-	#
-	# This buffer can be accessed with `0-based` indexing up to `length-1`.
-	#
-	# Indexing out-of-bounds is undefined or implementation-specific behavior.
-	#
-	# This value is `readonly` and cannot be changed by the user. However, the
-	# element values of the buffer are read-write by the user.
-	#
-	# Note that element bounds-checks are up to the implementation.
-	readonly buffer: Buffer[T]
 
 	# Construct a `Memory` object to hold `length` elements of the given type.
 	#
@@ -218,13 +166,17 @@ type Memory[T]:
 	def __init__(self, length: Uint64):
 		pass
 
-	# [pragma inline]
+	# Get the element at the specified buffer index.
+	#
+	# Indexing out-of-bounds is undefined or implementation-specific behavior.
 	def __getitem__(self, index: Uint64) -> T:
-		return self.buffer[index]
+		pass
 
-	# [pragma inline]
+	# Set the element at the specified buffer index.
+	#
+	# Indexing out-of-bounds is undefined or implementation-specific behavior.
 	def __setitem__(self, index: Uint64, value: T) -> None:
-		self.buffer[index] = value
+		pass
 
 	# Resize the `Memory` object to hold "at least" `length` elements.
 	#

@@ -32,21 +32,17 @@ type Vector[T is IntrinsicType]:
 		self._length = 0
 		self.push(vec)
 
-	# [pragma] inline
-	#
 	# Retrieve an element from the vector.
 	#
 	# @param : index
 	#   The index of the element to retrieve.
 	#
-	# Note: bounds checking is implementation dependent.
+	# Note: Bounds checking is implementation dependent.
 	#       Out-of-bounds access may result in a compiler-error,
 	#       a runtime exception, or a segfault.
 	def __getitem___(self, index: Uint64) -> T:
 		return self._memory[index]
 
-	# [pragma] inline
-	#
 	# Set an element in the vector.
 	#
 	# @param : index
@@ -61,14 +57,27 @@ type Vector[T is IntrinsicType]:
 	def __setitem__(self, index: Uint64, value: T) -> None:
 		self._memory[index] = value
 
-	# [pragma] inline
+	# Get the current length of the vector.
+	#
+	# @returns : The current length of the vector as-populated.
+	#            The vector may have more than this value allocated in
+	#            internal storage, but only `length` elements are valid.
 	def length(self) -> Uint64:
 		return self._length
 
+	# Clear the contents of the vector and set its `length` to `zero`.
+	#
+	# This function clears the internal memory buffer and resizes it
+	# to `zero`. 
 	def clear(self) -> None:
 		self._memory.resize(0)
 		self._length = 0
 
+	# Add an element to the end of the vector.
+	# 
+	# @param : value
+	#	The value to add to the end of the vector. This may cause the
+	#   vector to resize its internal memory buffer.
 	def push(self, value: T) -> None:
 		# Resize the buffer if needed.
 		#
