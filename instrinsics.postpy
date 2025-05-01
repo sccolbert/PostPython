@@ -186,6 +186,14 @@ type Memory[T]:
 	def __init__(self, length: Uint64):
 		pass
 
+	# [pragma inline]
+	def __getitem__(self, index: Uint64) -> T:
+		return self.buffer[index]
+
+	# [pragma inline]
+	def __setitem__(self, index: Uint64, value: T) -> None:
+		self.buffer[index] = value
+		
 	# Resize the `Memory` object to hold "at least" `length` elements.
 	#
 	# Note, the behavior of this method is implementation-dependent. An 

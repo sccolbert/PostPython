@@ -15,11 +15,11 @@ type Vector[T is IntrinsicType]:
 
 	# [pragma] inline
 	def __getitem___(self, index: Uint64) -> T:
-		return self._memory.buffer[index]
+		return self._memory[index]
 
 	# [pragma] inline
 	def __setitem__(self, index: Uint64, value: T) -> None:
-		self._memory.buffer[index] = value
+		self._memory[index] = value
 
 	# [pragma] inline
 	def length(self) -> Uint64:
