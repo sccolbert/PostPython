@@ -2,22 +2,62 @@
 from postpy.intrinsics import *
 
 
+# A limited functionality, type-safe vector.
+# 
+# Most high-level user code will not interact with this type.
+#
+# Low-level library authors may use this type as-needed.
+#
+# This type relies on manual memory management.
+#
+# This type has no concept of heap-allocated types that would otherwise
+# require memory management (i.e. garbage collection). Those details are
+# left to the developer.
 type Vector[T is IntrinsicType]:
 	
+	# Construct an empty vector to hold the given intrinsic type.
 	def __init__(self) -> None:
 		self._memory = Memory[T](8)
 		self._length = 0
 
+	# Construct a vector that is a copy of another vector.
+	#
+	# @param : vec
+	#   A vector of the same type to copy.
+	#
+	# The original vector is not mutated. The constructed vector
+	# is an independent copy of the passed vector.
 	def __init__(self, vec: Vector[T]) -> None:
 		self._memory = Memory[T](vec.length)
 		self._length = 0
 		self.push(vec)
 
 	# [pragma] inline
+	#
+	# Retrieve an element from the vector.
+	#
+	# @param : index
+	#   The index of the element to retrieve.
+	#
+	# Note: bounds checking is implementation dependent.
+	#       Out-of-bounds access may result in a compiler-error,
+	#       a runtime exception, or a segfault.
 	def __getitem___(self, index: Uint64) -> T:
 		return self._memory[index]
 
 	# [pragma] inline
+	#
+	# Set an element in the vector.
+	#
+	# @param : index
+	#   The index of the element to retrieve.
+	#
+	# @param : value
+	#   The value to assign at the index.
+	#
+	# Note: bounds checking is implementation dependent.
+	#       Out-of-bounds access may result in a compiler-error,
+	#       a runtime exception, or a segfault.
 	def __setitem__(self, index: Uint64, value: T) -> None:
 		self._memory[index] = value
 

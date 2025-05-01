@@ -112,6 +112,38 @@ type Complex128:
 
 
 #-----------------------------------------------------------------------------
+# Intrinsic Type Union
+#-----------------------------------------------------------------------------
+
+# A Union Type of all Intrinsic Compiler types.
+#
+# These are the fundamental data types that the compiler understands. All other 
+# behaviors (except for `Buffer` and `Memory`) are implemented by user-defined 
+# types and classes.
+type IntrinsicType = (
+	None        |
+	bool        |
+	Byte        |
+	Int8        |
+	Int16       |
+	Int32       |
+	Int64       |
+	Int128      |
+	Uint8       |
+	Uint16      |
+	Uint32      |
+	Uint64      |
+	Uint128     |
+	Float32     |
+	Float64     |
+	Float128    |
+	Complex32   |
+	Complex64   |
+	Complex128
+)
+
+
+#-----------------------------------------------------------------------------
 # Buffer Type
 #-----------------------------------------------------------------------------
 
@@ -193,7 +225,7 @@ type Memory[T]:
 	# [pragma inline]
 	def __setitem__(self, index: Uint64, value: T) -> None:
 		self.buffer[index] = value
-		
+
 	# Resize the `Memory` object to hold "at least" `length` elements.
 	#
 	# Note, the behavior of this method is implementation-dependent. An 
