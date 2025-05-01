@@ -118,8 +118,7 @@ type Complex128:
 # A Union Type of all Intrinsic Compiler types.
 #
 # These are the fundamental data types that the compiler understands. All other 
-# behaviors (except for `Buffer` and `Memory`) are implemented by user-defined 
-# types and classes.
+# behaviors (except `Memory`) are implemented by user-defined types/classes.
 type IntrinsicType = (
 	None        |
 	bool        |
