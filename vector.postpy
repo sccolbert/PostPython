@@ -1,0 +1,94 @@
+
+from postpy.intrinsics import *
+
+
+type Vector[T is IntrinsicType]:
+	
+	def __init__(self) -> None:
+		self._memory = Memory[T](8)
+		self._length = 0
+
+	def __init__(self, vec: Vector[T]) -> None:
+		self._memory = Memory[T](vec.length)
+		self._length = 0
+		self.push(vec)
+
+	# [pragma] inline
+	def __getitem___(self, index: Uint64) -> T:
+		return self._memory.buffer[index]
+
+	# [pragma] inline
+	def __setitem__(self, index: Uint64, value: T) -> None:
+		self._memory.buffer[index] = value
+
+	# [pragma] inline
+	def length(self) -> Uint64:
+		return self._length
+
+	def clear(self) -> None:
+		self._memory.resize(0)
+		self._length = 0
+
+	def push(self, value: T) -> None:
+		# Resize the buffer if needed.
+		#
+		# Resize strategy could be better once math functions are implemented.
+		if self._length >= self._memory.length:
+			self._memory.resize(self._length * 2)
+
+		# Assign the value to the end of the vector.
+		self[self._length] = value
+		self._length += 1
+
+	def push(self, vec: Vector[T]) -> None:
+		# Get the length of the vectors
+		sl = self._length
+		vl = vec._length
+
+		# Compute the total length needed.
+		n = sl + vl
+
+		# Resize the buffer if needed.
+		#
+		# Resize strategy could be better once math functions are implemented.
+		if (n >= self._memory.length):
+			self._memory.resize(n * 2)
+
+		# Copy over the values.
+		for i in (sl, n):
+			self[i] = vec[i - sl]
+
+		# Update the the vector length.
+		self._length = n
+
+	def pop(self) -> T:
+		# Sanity check
+		if self._length == 0:
+			raise "pop from empty vector"
+
+		# Lookup the last value
+		value = self[self._length - 1]
+
+		self._length -= 1
+
+		# Resize the buffer if needed.
+		#
+		# Resize strategy could be better once math functions are implemented.
+		if self._length < self._memory.length / 2:
+			self._memory.resize(self._memory.length / 2)
+
+		# Return the pop'd value
+		return value
+
+	def pop(self, n: Uint64) -> Vector[T]:
+		pass
+
+	def insert(index: Uint64, value: T) -> T:
+		pass
+
+	def insert(index: Uint64, value: Vector[T]) -> T:
+		pass
+
+	_memory: Memory[T]
+
+	_length: Uint64
