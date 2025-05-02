@@ -1,0 +1,16 @@
+
+
+
+protocol Iterator[T] is Iterable[T]:
+	
+	def __iter__(self) -> Iterator[T]:
+		pass
+
+	def __next__(self) -> T:
+		pass
+
+
+protocol Iterable[T]:
+
+	def __iter__(self) -> Iterator[T]:
+		pass
