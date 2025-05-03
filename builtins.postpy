@@ -1104,9 +1104,7 @@ type Complex256:
 # Memory Type
 #-----------------------------------------------------------------------------
 
-type Memory<T>:
-	
-	readonly size: Uint64
+type Memory[T]:
 
 	readonly length: Uint32
 
@@ -1118,7 +1116,7 @@ type Memory<T>:
 
 	def __setitem__(index: Uint32, value: T) -> None: ...
 
-	def copy() -> Memory<T>: ...
+	def copy() -> Memory[T]: ...
 
 	def resize(length: Uint32) -> None: ...
 
