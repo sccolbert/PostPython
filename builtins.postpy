@@ -1480,3 +1480,48 @@ type Tuple[T]:
 	# TODO slicing, concatenation, etc...
 
 
+# ----------------------------------------------------------------------------
+# Builtin Array Type
+#-----------------------------------------------------------------------------
+
+# A fixed-size mutable collection of values.
+#
+# Corresponds to the `[a, b, c]` literal syntax.
+#
+# An `Array` is a value-type, but the underlying buffer is a reference type.
+#
+# Note that an implementation may optimize small-arrays to not have a heap
+# allocated buffer at all.
+type Array[T]:
+
+	# The length of the array, in number of elements.
+	const length: Uint64
+
+	# Default constructor.
+	def __init__() -> None: ...
+
+	# Copy constructor.
+	def __init__(other: Array[T]) -> None: ...
+
+	# Sequence constructor.
+	def __init__(other: Sequence[T]) -> None: ...
+
+	# Iterable constructor.
+	def __init__(other: Iterable[T]) -> None: ...
+
+	# Get the item at the specified index in the array.
+	#
+	# Indexing out-of-bounds is implementation-defined.
+	#
+	# Note that negative indexing is not supported.
+	def __getitem__(index: Uint64) -> T: ...
+	
+	# Set the item at the specified index in the array.
+	#
+	# Indexing out-of-bounds is implementation-defined.
+	#
+	# Note that negative indexing is not supported.
+	def __setitem__(index: Uint64, value: T) -> None: ...
+	
+	# TODO slicing, concatenation, etc...
+
