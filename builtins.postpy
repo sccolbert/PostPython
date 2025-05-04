@@ -64,6 +64,8 @@
 # - Syntax for lists, dicts, sets, and their underlying types. I don't like
 #   the Python `list` API because it is not uniform. We have an opportunity
 #   to have better APIs for the builtin syntactic types. 
+#
+# - Builtin string type. Will be UTF-8, but Unicode aware?
 
 
 #-----------------------------------------------------------------------------
@@ -1296,3 +1298,68 @@ type Complex256:
 	# Division. The `/` operator.
 	def __div__(other: Complex256) -> Complex256: ...
 
+
+# The builtin type-and-size aware heap memory allocator for PostPython.
+#
+# The memory object itself is a value type and is passed and stored by value.
+# 
+# However, the actual memory buffer it holds is treated as a reference type
+# by the implementation and will be subject to garbage collection. i.e. there
+# is no specific way to `free` the memory other than the garbage collector. 
+#
+# However, a `Memory` object *can* be resized smaller by the user in order
+# pre-emptively recover unused space, such as in the case of variable-length
+# data structures.
+type Memory[T]:
+	# Default constructor.
+	#
+	# The constructed memory object will have a `zero` length buffer.
+	#
+	# If the operation fails, an exception will be raised.
+	def __init__() -> None: ...
+
+	# Copy constructor.
+	#
+	# The constructed memory object *shares* the internal buffer of the 
+	# other memory object.
+	#
+	# If the operation fails, an exception will be raised.
+	def __init__(other: Memory[T]) -> None: ...
+
+	# Construct a `Memory` object to hold `length` elements of the given type.
+	#
+	# If the operation fails, an exception will be raised.
+	#
+	# TODO: element initialization rules?
+	def __init__(length: Uint64) -> None: ...
+
+	# Get the element at the specified buffer index.
+	#
+	# Indexing out-of-bounds is implementation-specific behavior.
+	#
+	# Note that negative indexing is not supported.
+	def __getitem__(index: Uint64) -> T: ...
+
+	# Set the element at the specified buffer index.
+	#
+	# Indexing out-of-bounds is implementation-specific behavior.
+	#
+	# Note that negative indexing is not supported.
+	def __setitem__(index: Uint64, value: T) -> None: ...
+		
+	# The length of the memory buffer in number of `T` elements.
+	#
+	# Note that this is *not* the allocated size of the buffer in `bytes`.
+	get length() -> Uint64: ...
+
+	# Resize the `Memory` object to hold `length` elements.
+	#
+	# If the operation fails, an exception will be raised.
+	#
+	# TODO: element initialization/destruction rules?
+	def resize(self, length: Uint64): ...
+
+	# Create a copy of the `Memory` object, including its internal buffer.
+	#
+	# If the operation fails, an exception will be raised.
+	def copy() -> Memory[T]: ...
