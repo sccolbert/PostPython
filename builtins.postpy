@@ -18,6 +18,11 @@
 # passed by reference and assigned by reference. They may contain "value" 
 # types as part of their allocated structure.
 #
+# `self` is implicit in method bodies. This may seem to violate the rule that
+# "explicit is better than implicit", but this is less typing for everyone
+# and the alternative is to have the runtime "implicitly" pass `self` as the
+# first argument to all methods.
+#
 # We will have exceptions, but only for exceptional circumstances. We will
 # avoid using exceptions for control flow.
 #

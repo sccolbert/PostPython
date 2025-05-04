@@ -5,132 +5,75 @@
 #-----------------------------------------------------------------------------
 
 
-# # 
-# type Vector[T]:
+# 
+class Vector[T]:
+	# The current number of elements in the vector.
+	readonly length: Uint64
+
+	# The internal memory storage for the vector.
+	_memory: Memory[T]
+
+	# Default constructor.
+	def __init__() -> None:
+		# TODO Implement
+		pass
+
+	# Copy constructor.
+	def __init__(other: Vector[T]) -> None:
+		# TODO Implement
+		pass
+
+	# Sequence constructor.
+	def __init__(sequence: Sequence[T]) -> None:
+		# TODO Implement
+		pass
+
+	# Iterable constructor.
+	def __init__(iterable: Iterable[T]) -> None:
+		# TODO Implement
+		pass
+
+	# Retrieve an element from the vector.
+	def __getitem___(index: Uint64) -> T:
+		# TODO Implement
+		pass
+
+	# Set an element in the vector.
+	def __setitem__(index: Uint64, value: T) -> None:
+		# TODO Implement
+		pass
+
+	# Clear the contents of the vector and set its `length` to `zero`.
+	def clear() -> None:
+		# TODO Implement
+		pass
+
+	# Add an element to the end of the vector.
+	def push(value: T) -> None:
+		# TODO Implement
+		pass
 	
-# 	# Construct an empty vector to hold the given intrinsic type.
-# 	def __init__() -> None:
-# 		self._memory = Memory[T](8)
-# 		self._length = 0
+	def insert(index: Uint64, value: T) -> T:
+		# TODO Implement
+		pass
 
-# 	# Construct a vector that is a copy of another vector.
-# 	#
-# 	# @param : vec
-# 	#   A vector of the same type to copy.
-# 	#
-# 	# The original vector is not mutated. The constructed vector
-# 	# is an independent copy of the passed vector.
-# 	def __init__(self, vec: Vector[T]) -> None:
-# 		self._memory = Memory[T](vec.length)
-# 		self._length = 0
-# 		self.push(vec)
+	def pop() -> T:
+		# TODO Implement
+		pass
 
-# 	# Retrieve an element from the vector.
-# 	#
-# 	# @param : index
-# 	#   The index of the element to retrieve.
-# 	#
-# 	# Note: Bounds checking is implementation dependent.
-# 	#       Out-of-bounds access may result in a compiler-error,
-# 	#       a runtime exception, or a segfault.
-# 	def __getitem___(self, index: Uint64) -> T:
-# 		return self._memory[index]
+	def extend(sequence: Sequence[T]) -> None:
+		# TODO Implement
+		pass
+	
+	def extend(iterable: Iterable[T]) -> None:
+		# TODO Implement
+		pass
 
-# 	# Set an element in the vector.
-# 	#
-# 	# @param : index
-# 	#   The index of the element to retrieve.
-# 	#
-# 	# @param : value
-# 	#   The value to assign at the index.
-# 	#
-# 	# Note: bounds checking is implementation dependent.
-# 	#       Out-of-bounds access may result in a compiler-error,
-# 	#       a runtime exception, or a segfault.
-# 	def __setitem__(self, index: Uint64, value: T) -> None:
-# 		self._memory[index] = value
+	def splice(index: Uint64, Sequence[T]) -> None:
+		# TODO Implement
+		pass
 
-# 	# Get the current length of the vector.
-# 	#
-# 	# @returns : The current length of the vector as-populated.
-# 	#            The vector may have more than this value allocated in
-# 	#            internal storage, but only `length` elements are valid.
-# 	def length(self) -> Uint64:
-# 		return self._length
+	def splice(index: Uint64, Iterable[T]) -> None:
+		# TODO Implement
+		pass
 
-# 	# Clear the contents of the vector and set its `length` to `zero`.
-# 	#
-# 	# This function clears the internal memory buffer and resizes it
-# 	# to `zero`. 
-# 	def clear(self) -> None:
-# 		self._memory.resize(0)
-# 		self._length = 0
-
-# 	# Add an element to the end of the vector.
-# 	# 
-# 	# @param : value
-# 	#	The value to add to the end of the vector. This may cause the
-# 	#   vector to resize its internal memory buffer.
-# 	def push(self, value: T) -> None:
-# 		# Resize the buffer if needed.
-# 		#
-# 		# Resize strategy could be better once math functions are implemented.
-# 		if self._length >= self._memory.length:
-# 			self._memory.resize(self._length * 2)
-
-# 		# Assign the value to the end of the vector.
-# 		self[self._length] = value
-# 		self._length += 1
-
-# 	def push(self, vec: Vector[T]) -> None:
-# 		# Get the length of the vectors
-# 		sl = self._length
-# 		vl = vec._length
-
-# 		# Compute the total length needed.
-# 		n = sl + vl
-
-# 		# Resize the buffer if needed.
-# 		#
-# 		# Resize strategy could be better once math functions are implemented.
-# 		if n >= self._memory.length:
-# 			self._memory.resize(n * 2)
-
-# 		# Copy over the values.
-# 		for i = sl, i < n, i = i + 1:
-# 			self[i] = vec[i - sl]
-
-# 		# Update the the vector length.
-# 		self._length = n
-
-# 	def pop(self) -> T:
-# 		# Sanity check
-# 		if self._length == 0:
-# 			raise "pop from empty vector"
-
-# 		# Lookup the last value
-# 		value = self[self._length - 1]
-
-# 		self._length -= 1
-
-# 		# Resize the buffer if needed.
-# 		#
-# 		# Resize strategy could be better once math functions are implemented.
-# 		if self._length < self._memory.length / 2:
-# 			self._memory.resize(self._memory.length / 2)
-
-# 		# Return the pop'd value
-# 		return value
-
-# 	def pop(self, n: Uint64) -> Vector[T]:
-# 		pass
-
-# 	def insert(index: Uint64, value: T) -> T:
-# 		pass
-
-# 	def insert(index: Uint64, value: Vector[T]) -> T:
-# 		pass
-
-# 	_memory: Memory[T]
-
-# 	_length: Uint64
