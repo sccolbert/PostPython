@@ -67,9 +67,14 @@
 #
 # - Implicit default destructor?
 #
-# - Syntax for lists, dicts, sets, and their underlying types. I don't like
+# - Syntax for lists, dicts, sets, and their underlying types? I don't like
 #   the Python `list` API because it is not uniform. We have an opportunity
-#   to have better APIs for the builtin syntactic types. 
+#   to have better APIs for the builtin syntactic types. I'm thinking that
+#   the syntax should support only fixed-size objects. For example, the 
+#   tuple sytax is a fixed-size allocation. I'm thinking of using the "list"
+#   syntax to create a mutable-but-fixed-size builtin "array" object, akin
+#   to a C++ array. Variable size collections would all be libraries that are
+#   implemented the "standard library", ala "Vector", "Dict", "Set", etc...
 #
 # - Builtin string type. Will be UTF-8, but Unicode aware?
 
@@ -1350,14 +1355,14 @@ type Memory[T]:
 
 	# Get the element at the specified buffer index.
 	#
-	# Indexing out-of-bounds is implementation-specific behavior.
+	# Indexing out-of-bounds is implementation-defined.
 	#
 	# Note that negative indexing is not supported.
 	def __getitem__(index: Uint64) -> T: ...
 
 	# Set the element at the specified buffer index.
 	#
-	# Indexing out-of-bounds is implementation-specific behavior.
+	# Indexing out-of-bounds is implementation-defined.
 	#
 	# Note that negative indexing is not supported.
 	def __setitem__(index: Uint64, value: T) -> None: ...
@@ -1394,7 +1399,7 @@ protocol Sequence[T]:
 
 	# Get the item at the specified index in the sequence.
 	#
-	# Indexing out-of-bounds is implementation-specific behavior.
+	# Indexing out-of-bounds is implementation-defined.
 	#
 	# Note that negative indexing is not supported.
 	def __getitem__(index: Uint64) -> T: ...
@@ -1427,6 +1432,9 @@ protocol Iterator[T]:
 # An `Iterable` is an object that can be used in a `for...in` construct.
 #
 # It's role is to produce the `Iterator` that will be consumed by the runtime.
+#
+# If an object is both a `Sequence` and an `Iterable`, the `Sequence` protocol
+# will be preferred for iteration as it is assumed to be more efficient.
 protocol Iterable[T]:
 	
 	# Produce the `Iterator` object for the underlying collection.
@@ -1440,6 +1448,11 @@ protocol Iterable[T]:
 # A fixed-size immutable collection of values.
 #
 # Corresponds to the `(a, b, c)` literal syntax.
+#
+# A `Tuple` is a value-type, but the underlying buffer is a reference type.
+#
+# Note that an implementation may optimize small-tuples to not have a heap
+# allocated buffer at all.
 type Tuple[T]:
 
 	# The length of the tuple, in number of elements.
@@ -1459,7 +1472,7 @@ type Tuple[T]:
 
 	# Get the item at the specified index in the tuple.
 	#
-	# Indexing out-of-bounds is implementation-specific behavior.
+	# Indexing out-of-bounds is implementation-defined.
 	#
 	# Note that negative indexing is not supported.
 	def __getitem__(index: Uint64) -> T: ...
