@@ -21,7 +21,7 @@
 # We will have exceptions, but only for exceptional circumstances. We will
 # avoid using exceptions for control flow.
 #
-# Objects of `type` and `class` form are nominally typed. If code expects a
+# Objects of `type` and `class` are nominally typed. If code expects a
 # nominal type, it will only receive that nominal type. "duck-typing" one
 # type to fit a nominal type is not allowed. Use `protocol` types for 
 # "duck-typing".
@@ -1522,6 +1522,6 @@ type Array[T]:
 	#
 	# Note that negative indexing is not supported.
 	def __setitem__(index: Uint64, value: T) -> None: ...
-	
+
 	# TODO slicing, concatenation, etc...
 
