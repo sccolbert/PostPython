@@ -1,68 +1,72 @@
-from .instrics import IntrinsicType
-
-
 #-----------------------------------------------------------------------------
-# Memory Type
-#-----------------------------------------------------------------------------
-
-# The core size-aware memory type for heap allocation.
+# POSTPython Memory Module
 #
-# Note that the size of the underlying device buffer in bytes is "at least" 
-# large enough to hold `n = length` elements, but it may be greater.
-type Memory[T is IntrinsicType]:
+#
+#-----------------------------------------------------------------------------
 
-	# The length of the memory buffer in number of `T` elements.
+
+# The core type-and-size aware heap memory allocator for PostPython.
+#
+# The memory object itself is a value type and is passed and stored by value.
+# 
+# However, the actual memory buffer it holds is treated as a reference type
+# by the implementation and will be subject to garbage collection. i.e. there
+# is no specific way to `free` the memory other than the garbage collector. 
+#
+# However, a `Memory` object *can* be resized smaller by the user in order
+# pre-emptively recover unused space, such as in the case of variable-length
+# data structures.
+type Memory[T]:
+	# Default constructor.
 	#
-	# This value is `readonly` and cannot be changed by the user.
-	readonly length: Uint64
+	# The constructed memory object will have a `zero` length buffer.
+	#
+	# If the operation fails, an exception will be raised.
+	def __init__() -> None: ...
+
+	# Copy constructor.
+	#
+	# The constructed memory object *shares* the internal buffer of the 
+	# other memory object.
+	#
+	# If the operation fails, an exception will be raised.
+	def __init__(other: Memory[T]) -> None: ...
 
 	# Construct a `Memory` object to hold `length` elements of the given type.
 	#
-	# If the allocation fails, an exception will be raised.
+	# If the operation fails, an exception will be raised.
 	#
-	# All elements of the buffer will be initialized to `zero` in memory.
-	def __init__(self, length: Uint64):
-		pass
+	# TODO: element initialization rules?
+	def __init__(length: Uint64) -> None: ...
 
 	# Get the element at the specified buffer index.
 	#
-	# Indexing out-of-bounds is undefined or implementation-specific behavior.
-	def __getitem__(self, index: Uint64) -> T:
-		pass
+	# Indexing out-of-bounds is implementation-specific behavior.
+	#
+	# Note that negative indexing is not supported.
+	def __getitem__(index: Uint64) -> T: ...
 
 	# Set the element at the specified buffer index.
 	#
-	# Indexing out-of-bounds is undefined or implementation-specific behavior.
-	def __setitem__(self, index: Uint64, value: T) -> None:
-		pass
+	# Indexing out-of-bounds is implementation-specific behavior.
+	#
+	# Note that negative indexing is not supported.
+	def __setitem__(index: Uint64, value: T) -> None: ...
+		
+	# The length of the memory buffer in number of `T` elements.
+	#
+	# Note that this is *not* the allocated size of the buffer in `bytes`.
+	get length() -> Uint64: ...
 
-	# Resize the `Memory` object to hold "at least" `length` elements.
+	# Resize the `Memory` object to hold `length` elements.
 	#
-	# Note, the behavior of this method is implementation-dependent. An 
-	# implementation may move the memory buffer pointer, or it may not. 
-	# It may copy memory, or it may not.
+	# If the operation fails, an exception will be raised.
 	#
-	# Guarantees from the implentation on success are as follows:
-	# - If resizing larger, all new elements are initialized to zero.
-	# - If resizing smaller, all dead elements are freed.
-	# - If moving the buffer pointer, all valid elements are copied.
-	#
-	# The `resize` operation is not thread-safe unless otherwise specified
-	# by an implementation.
-	#
-	# If this operation fails, an exception will be raised.
-	def resize(self, length: Uint64):
-		pass
+	# TODO: element initialization/destruction rules?
+	def resize(self, length: Uint64): ...
 
-	# Free the device memory owned by this object.
+	# Create a copy of the `Memory` object, including its internal buffer.
 	#
-	# After this call, the `Memory` object is invalid and accessing it after
-	# this call is undefined behvior, or implementation-specific.
-	#
-	# Guarantees from the implementation are as follows:
-	# - The entire memory buffer will be over-written with `zero`.
-	#
-	# Whether this function fails (i.e. double-free) is specific to the
-	# implementation. Should it fail, an exception will be raised.
-	def free(self):
-		pass
+	# If the operation fails, an exception will be raised.
+	def copy() -> Memory[T]: ...
+

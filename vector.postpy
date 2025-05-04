@@ -1,22 +1,15 @@
+#-----------------------------------------------------------------------------
+# POSTPython Vector Module
+#
+#
+#-----------------------------------------------------------------------------
 
-from postpy.intrinsics import *
 
-
-# A limited functionality, type-safe vector.
 # 
-# Most high-level user code will not interact with this type.
-#
-# Low-level library authors may use this type as-needed.
-#
-# This type relies on manual memory management.
-#
-# This type has no concept of heap-allocated types that would otherwise
-# require memory management (i.e. garbage collection). Those details are
-# left to the developer.
-type Vector[T is IntrinsicType]:
+type Vector[T]:
 	
 	# Construct an empty vector to hold the given intrinsic type.
-	def __init__(self) -> None:
+	def __init__() -> None:
 		self._memory = Memory[T](8)
 		self._length = 0
 
@@ -100,11 +93,11 @@ type Vector[T is IntrinsicType]:
 		# Resize the buffer if needed.
 		#
 		# Resize strategy could be better once math functions are implemented.
-		if (n >= self._memory.length):
+		if n >= self._memory.length:
 			self._memory.resize(n * 2)
 
 		# Copy over the values.
-		for i in (sl, n):
+		for i = sl, i < n, i = i + 1:
 			self[i] = vec[i - sl]
 
 		# Update the the vector length.
