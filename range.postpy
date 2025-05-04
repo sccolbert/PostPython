@@ -1,0 +1,74 @@
+#-----------------------------------------------------------------------------
+# POSTPython Range Module
+#
+#
+#-----------------------------------------------------------------------------
+
+
+# The `Range` type.
+#
+# This type is commonly used to emulated index-based `for` loops.
+type Range:
+	
+	# The starting value of the range, inclusive.
+	const start: Int64
+
+	# The ending value of the range, exclusive.
+	const stop: Int64
+
+	# The step size between values in the range.
+	#
+	# This will never be zero.
+	const step: Int64
+
+	# The length of the range.
+	#
+	# This will be zero if there are no logical values in the range.
+	const length: Uint64
+
+	# Construct a `Range` with a `stop` value.
+	#
+	# The `start` value is assumed to be `0`.
+	#
+	# The `step` value is assumed to be `1`.
+	def __init__(stop: Int64) -> None:
+		Range(0, stop, 1)
+
+	# Construct a `Range` with a `start` and `stop` value.
+	#
+	# The `step` value is assumed to be `1`.
+	def __init__(start: Int64, stop: Int64) -> None:
+		Range(start, stop, 1)
+
+	# Construct a `Range` with `start`, `stop`, and `step` values.
+	def __init__(start: Int64, stop: Int64, step: Int64) -> None:
+		# A `zero` step size is a programming error.
+		if step == 0:
+			raise ValueError("Range `step` cannot be zero")
+		
+		# Initialize the simple member fields.
+		self.start = start
+		self.stop = stop
+		self.step = step
+		
+		# Compute the range length. Rely on floor division of Int64 types.
+		#
+		# TODO: handle overflow from large span subtraction.
+		length = (stop - start) / step
+
+		# Clamp the length to `>= 0`.
+		# 
+		# TODO: define a `max` function for numbers to make this easier?
+		self.length = 0 if length < 0 else n
+
+	# Get the value of the range at the specified index.
+	#
+	# If the index is out-of-bounds, an exception will be raised.
+	def __getitem__(index: Uint64) -> Int64:
+		# Indexing a `Range` out-of-bounds is a programming error.
+		if index >= self.length:
+			raise IndexError("Range index out of range")
+
+		# Compute the indexed value.
+		return self.start + index * self.step
+

@@ -52,7 +52,9 @@
 #
 # `readonly` attributes. Current thoughts are that they are `readonly` by
 # code which "consumes" the type or class. They can be modified by the
-# type or class itself, but not by subclasses.
+# type or class itself, but not by subclasses. `const` attributes are constant
+# and can never be changed after initialization, by anything. Note that a
+# `const` attribute can decay to `readonly` to meet a protocol.
 #
 # Questions:
 #
@@ -1196,10 +1198,10 @@ type Float128:
 type Complex64:
 
 	# The real component of the complex type.
-	readonly real: Float32
+	const real: Float32
 
 	# The imaginary component of the complex type.
-	readonly imag: Float32
+	const imag: Float32
 	
 	# Default constructor.
 	def __init__() -> None: ...
@@ -1233,10 +1235,10 @@ type Complex64:
 type Complex128:
 
 	# The real component of the complex type.
-	readonly real: Float64
+	const real: Float64
 
 	# The imaginary component of the complex type.
-	readonly imag: Float64
+	const imag: Float64
 
 	# Default constructor.
 	def __init__() -> None: ...
@@ -1270,10 +1272,10 @@ type Complex128:
 type Complex256:
 	
 	# The real component of the complex type.
-	readonly real: Float128
+	const real: Float128
 
 	# The imaginary component of the complex type.
-	readonly imag: Float128
+	const imag: Float128
 
 	# Default constructor.
 	def __init__() -> None: ...
@@ -1373,14 +1375,18 @@ type Memory[T]:
 	def copy() -> Memory[T]: ...
 
 
-
 # ----------------------------------------------------------------------------
 # Sequence Protocol
 #-----------------------------------------------------------------------------
 
 # The `Sequence` protocol.
 #
-# A `Sequence` is a simple object that can be iterated with index-based loop.
+# A `Sequence` is a simple object representing an ordered sequence of values.
+#
+# In addition to direct-index, it can be used in a `for...in` construct.
+#
+# If an object is both a `Sequence` and an `Iterable`, the `Sequence` protocol
+# will be preferred for iteration as it is assumed to be more efficient.
 protocol Sequence[T]:
 	
 	# The length of the sequence, in number of elements.
@@ -1437,7 +1443,7 @@ protocol Iterable[T]:
 type Tuple[T]:
 
 	# The length of the tuple, in number of elements.
-	readonly length: Uint64
+	const length: Uint64
 
 	# Default constructor.
 	def __init__() -> None: ...
