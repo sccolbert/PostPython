@@ -50,6 +50,10 @@
 # presence of exceptions. This will support RAII as in C++, and eliminates
 # the need for the `with` construct from Python.
 #
+# `readonly` attributes. Current thoughts are that they are `readonly` by
+# code which "consumes" the type or class. They can be modified by the
+# type or class itself, but not by subclasses.
+#
 # Questions:
 #
 # - The types declared in this file are always available as "magic" builtins.
@@ -1315,6 +1319,11 @@ type Complex256:
 # pre-emptively recover unused space, such as in the case of variable-length
 # data structures.
 type Memory[T]:
+	# The length of the memory buffer in number of `T` elements.
+	#
+	# Note that this is *not* the allocated size of the buffer in `bytes`.
+	readonly length: Uint64
+
 	# Default constructor.
 	#
 	# The constructed memory object will have a `zero` length buffer.
@@ -1351,11 +1360,6 @@ type Memory[T]:
 	# Note that negative indexing is not supported.
 	def __setitem__(index: Uint64, value: T) -> None: ...
 		
-	# The length of the memory buffer in number of `T` elements.
-	#
-	# Note that this is *not* the allocated size of the buffer in `bytes`.
-	get length() -> Uint64: ...
-
 	# Resize the `Memory` object to hold `length` elements.
 	#
 	# If the operation fails, an exception will be raised.
@@ -1383,6 +1387,10 @@ protocol Sequence[T]:
 	readonly length: Uint64
 
 	# Get the item at the specified index in the sequence.
+	#
+	# Indexing out-of-bounds is implementation-specific behavior.
+	#
+	# Note that negative indexing is not supported.
 	def __getitem__(index: Uint64) -> T: ...
 
 
@@ -1418,5 +1426,38 @@ protocol Iterable[T]:
 	# Produce the `Iterator` object for the underlying collection.
 	def __iter__() -> Iterator[T]: ...
 
+
+# ----------------------------------------------------------------------------
+# Builtin Tuple Type
+#-----------------------------------------------------------------------------
+
+# A fixed-size immutable collection of values.
+#
+# Corresponds to the `(a, b, c)` literal syntax.
+type Tuple[T]:
+
+	# The length of the tuple, in number of elements.
+	readonly length: Uint64
+
+	# Default constructor.
+	def __init__() -> None: ...
+
+	# Copy constructor.
+	def __init__(other: Tuple[T]) -> None: ...
+
+	# Sequence constructor.
+	def __init__(other: Sequence[T]) -> None: ...
+
+	# Iterable constructor.
+	def __init__(other: Iterable[T]) -> None: ...
+
+	# Get the item at the specified index in the tuple.
+	#
+	# Indexing out-of-bounds is implementation-specific behavior.
+	#
+	# Note that negative indexing is not supported.
+	def __getitem__(index: Uint64) -> T: ...
+
+	# TODO slicing, concatenation, etc...
 
 
