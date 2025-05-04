@@ -27,7 +27,7 @@
 # "duck-typing".
 #
 # A `protocol` type is any object that *structurally* meets the definition of
-# a `protocol`. This of this as "explicit" duck-typing, or an interface. This
+# a `protocol`. Think of this as "explicit" duck-typing, or an interface. This
 # will necessarily be slower in-use than nominal types, due the boxing and/or
 # virtualization that may be required.
 #
