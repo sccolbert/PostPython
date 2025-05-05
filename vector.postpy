@@ -3,77 +3,119 @@
 #
 #
 #------------------------------------------------------------------------------
+from .range import Range
+from .sequence import SequenceIterator
 
 
 #
 class Vector[T]:
-    # The current number of elements in the vector.
-    readonly length: Uint64
-
-    # The internal memory storage for the vector.
-    _memory: Memory[T]
-
     # Default constructor.
+    #
+    # Construct a new empty vector.
     def __init__() -> None:
-        # TODO Implement
-        pass
-
-    # Copy constructor.
-    def __init__(other: Vector[T]) -> None:
-        # TODO Implement
-        pass
+        self._buffer = Buffer[T]()
 
     # Sequence constructor.
-    def __init__(sequence: Sequence[T]) -> None:
-        # TODO Implement
-        pass
+    #
+    # Construct a vector copy of the given sequence.
+    def __init__(other: Sequence[T]) -> None:
+        self._buffer = Buffer[T](other.length)
+        self.extend(other)
 
     # Iterable constructor.
-    def __init__(iterable: Iterable[T]) -> None:
-        # TODO Implement
-        pass
+    #
+    # Construct a vector copy of the given iterable.
+    def __init__(other: Iterable[T]) -> None:
+        self._buffer = Buffer[T]()
+        self.extend(other)
+
+    def __iter__() -> Iterator[T]:
+        return SequenceIterator(self)
 
     # Retrieve an element from the vector.
+    #
+    # Indexing out-of-bounds is implementation defined.
     def __getitem___(index: Uint64) -> T:
-        # TODO Implement
-        pass
+        return self._buffer[index]
 
     # Set an element in the vector.
+    #
+    # Indexing out-of-bounds is implementation defined.
     def __setitem__(index: Uint64, value: T) -> None:
-        # TODO Implement
-        pass
+        self._buffer[index] = value
+
+    # Get the current length of the vector.
+    get length() -> Uint64:
+        return self._buffer.length
 
     # Clear the contents of the vector and set its `length` to `zero`.
     def clear() -> None:
-        # TODO Implement
-        pass
+        self._buffer.resize(0)
 
     # Add an element to the end of the vector.
     def push(value: T) -> None:
-        # TODO Implement
-        pass
+        # Resize the buffer if needed.
+        if self._buffer.length == self._buffer.capacity:
+            self._buffer.resize(self._buffer.length * 2)
 
-    def insert(index: Uint64, value: T) -> T:
-        # TODO Implement
-        pass
+        # Capacity is availble, assign to the end of the buffer.
+        self._buffer[self._buffer.length] = value
 
     def pop() -> T:
-        # TODO Implement
-        pass
+        # Bail if the vector is empty.
+        if self._buffer.length == 0:
+            raise IndexError("Pop from empty Vector")
 
-    def extend(sequence: Sequence[T]) -> None:
-        # TODO Implement
-        pass
+        # Fetch the last value in the buffer.
+        last = self._buffer[self._buffer.length - 1]
 
-    def extend(iterable: Iterable[T]) -> None:
-        # TODO Implement
-        pass
+        # Resize the buffer.
+        self._buffer.resize(self._buffer.length - 1)
 
-    def splice(index: Uint64, Sequence[T]) -> None:
+        # Return the pop'd value.
+        return last
+
+    def insert(index: Uint64, value: T) -> None:
+        # Bail if the index is invalid.
+        if index > self._buffer.length:
+            raise IndexError("Insert beyond end of Vector")
+
+        # Perform a push if it makes sense.
+        if index == self._buffer.length:
+            self.push(value)
+            return
+
+        # Resize the buffer if needed.
+        if self._buffer.length == self._buffer.capacity:
+            self._buffer.resize(n * 2)
+
+        # Copy the trailing values to their new locations.
+        #
+        # This will call the copy constructors and destructors
+        # for the moved value types.
+        #
+        # TODO: check this math.
+        for i in Range(self._buffer.length - 1, index - 1, -1):
+            self._buffer[i] = self._buffer[i - 1]
+
+        # Insert the new value at the specified index.
+        self._buffer[index] = value
+
+    def extend(other: Sequence[T]) -> None:
+        self.splice(self._buffer.length, other)
+
+    def extend(other: Iterable[T]) -> None:
+        self.splice(self._buffer.length, other)
+
+    def splice(index: Uint64, other: Sequence[T]) -> None:
         # TODO Implement
         pass
 
     def splice(index: Uint64, Iterable[T]) -> None:
         # TODO Implement
         pass
+
+    # The internal buffer storage for the vector.
+    _buffer: Buffer[T]
+
 

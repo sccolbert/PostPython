@@ -1,0 +1,58 @@
+#------------------------------------------------------------------------------
+# POSTPython Array Module
+#
+#
+#------------------------------------------------------------------------------
+from .iterable import Iterable
+from .sequence import Sequence
+from .numbers import Int32, UInt64
+
+
+# The builtin `Array` type.
+#
+# An array is a fixed-size mutable collection of values.
+#
+# Corresponds to the `[a, b, c]` literal syntax.
+#
+# An `Array` is a value type, but its internal buffer is a reference type.
+type Array[T]:
+
+    # The length of the array, in number of elements.
+    const length: Uint64
+
+    # Default constructor.
+    def __init__() -> None: ...
+
+    # Sequence constructor.
+    #
+    # The new array has a new internal buffer populated by the sequence.
+    def __init__(other: Sequence[T]) -> None: ...
+
+    # Iterable constructor.
+    #
+    # The new array has a new internal buffer populated by the sequence.
+    def __init__(other: Iterable[T]) -> None: ...
+
+    # Copy constructor.
+    #
+    # The new array shares the internal buffer with the other array.
+    def __init__(other: Array[T]) -> None: ...
+
+    # Get the item at the specified *unsigned* index in the array.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __getitem__(index: Uint64) -> T: ...
+
+    # Get the item at the specified *signed* index in the array.
+    #
+    # Note that when using signed indexing: if `length > 2^32` some elements
+    # of the array will be inaccessible.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __getitem__(index: Int32) -> T: ...
+
+    # Set the item at the specified index in the array.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __setitem__(index: Uint64, value: T) -> None: ...
+

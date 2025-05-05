@@ -1,0 +1,79 @@
+#------------------------------------------------------------------------------
+# POSTPython Buffer Module
+#
+#
+#------------------------------------------------------------------------------
+# The builtin type-and-size aware heap memory allocator for PostPython.
+#
+# The buffer object is a reference type and cannot be subclassed.
+final
+class Buffer[T]:
+    # The length of the buffer in number of `T` initialized elements.
+    #
+    # This will grow up to `capcity` as elements are assigned to
+    # `index == length` at which point it will cease to grow.
+    readonly length: Uint64
+
+    # The capacity of the buffer in number of `T` elements.
+    #
+    # This value is always `>= length`.
+    #
+    # This will only change if the buffer is resized.
+    readonly capacity: Uint64
+
+    # Default constructor.
+    #
+    # The buffer will have zero `length` and default `capacity`.
+    def __init__() -> None: ...
+
+    # Construct a `Buffer` object to hold at least `length` elements.
+    #
+    # The `length` of the buffer will be zero, but the `capacity` is
+    # guaranteed to be at least the requested `length` in capacity.
+    def __init__(length: Uint64) -> None: ...
+
+    # Get the element at the specified buffer index.
+    #
+    # Indexing at `< length` is guaranteed to be a valid object.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __getitem__(index: Uint64) -> T: ...
+
+    # Set the element at the specified buffer index.
+    #
+    # Assigning to `index < length` is guaranteed to overwrite an existing
+    # object.
+    #
+    # Assigning at `index == length` if `length < capacity` is guaranteed
+    # to to initialize the element at that index, and the `length` will be
+    # increased by `1`.
+    #
+    # Assigning at `index >= length` if `length == capacity` is a programing
+    # error and the behavior is implementation defined.
+    def __setitem__(index: Uint64, value: T) -> None: ...
+
+    # Resize the `Buffer` object to hold at least `length` objects.
+    #
+    # The result is guaranteed to hold at least `length` in capacity,
+    #
+    # If the buffer is grown, the elements beyond `length` will be
+    # unaccessible and uninitialized. They must be assigned before use.
+    # Regardless, `length` items will still be valid.
+    #
+    # If the buffer is shrunk, stale elements will have their destructors
+    # called subject to the destruction rules of the garbage collector.
+    # Regardless, `length` items will still be valid.
+    #
+    # In either case, the `capacity` will still be `>= length` subject
+    # to the internal allocation strategy of the buffer.
+    def resize(self, length: Uint64): -> None ...
+
+    #
+    def move(src: Uint64, dst: Uint64, length: Uint64) -> None: ...
+
+
+    #
+    def assign(index: Uint64, other: Sequence[T]) -> None: ...
+
+    #
+    def assign(index: Uint64, other: Iterable[T]) -> None: ...

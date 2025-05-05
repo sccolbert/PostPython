@@ -1,0 +1,40 @@
+#------------------------------------------------------------------------------
+# POSTPython Iterable Module
+#
+#
+#------------------------------------------------------------------------------
+from .option import Option
+
+
+# The `Iterable` protocol.
+#
+# An `Iterable` is an object that can be used in a `for...in` construct.
+#
+# It's role is to produce an `Iterator` that is consumed by the runtime.
+#
+# If an object implements both the `Sequence` and the `Iterable` protocols,
+# the `Sequence` protocol will be preferred for iteration as it is assumed
+# to be more efficient.
+protocol Iterable[T]:
+
+    # Produce the `Iterator` object for the underlying collection.
+    def iter() -> Iterator[T]: ...
+
+
+# The `Iterator` protocol.
+#
+# An `Iterator` is an object that can be used in a `for...in` construct.
+#
+# It produces a stream of values from an underlying collection.
+protocol Iterator[T]:
+
+    # Iterators themselves implement the `Iterable` protocol.
+    #
+    # Typically, an iterator will just return itself.
+    def iter() -> Iterator[T]: ...
+
+    # Get the next element from the iterator.
+    #
+    # An exhausted iterator returns an invalid `Option` object.
+    def next() -> Option[T]: ...
+

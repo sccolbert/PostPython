@@ -1,0 +1,44 @@
+#------------------------------------------------------------------------------
+# POSTPython Option Module
+#
+#
+#------------------------------------------------------------------------------
+
+
+# The builtin `Option` type.
+#
+# POSTPython does not have the concept of `None`. Whenever the concept
+# of a "missing" value is needed, the `Option` type should be used.
+#
+# For example, the `Iterator` protocol uses `Option` types instead of a
+# traditional Python `StopIteration` exception.
+#
+# In general, POSTPython takes the approach that exceptions should not
+# be used for control flow.
+type Option[T]:
+
+    # Whether the `Option` object contains a `value`.
+    #
+    # If this is `true`, `value` is guaranteed to exist.
+    const valid: Bool
+
+    # The value of the `Option` object.
+    #
+    # This *only* exists if `valid` is `true`.
+    #
+    # If `valid` is `false`, accessing `value` will throw an exception.
+    const value: T
+
+    # Default constructor.
+    #
+    # This constructs a `false` option object.
+    def __init__(): ...
+
+    # Value constructor.
+    #
+    # This constructs a `true` option object with the given `value`.
+    def __init__(value: T): ...
+
+    # Copy constructor.
+    def __init__(other: Option[T]): ...
+

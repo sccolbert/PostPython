@@ -1,0 +1,45 @@
+#------------------------------------------------------------------------------
+# POSTPython Itertools Module
+#
+#
+#------------------------------------------------------------------------------#
+
+# The `SequenceIterator` object.
+#
+# This object can be used to wrap any object that implements the `Sequence`
+# protocol to meet the `Iterator` protocol.
+type SequenceIterator[T]:
+
+    # Construct an iterator for a `Sequence` object.
+    #
+    # @param sequence - The sequence object to iterate.
+    __init__(sequence: Sequence[T]):
+        self._sequence = sequence
+        self._index = 0
+
+    # Copy constructor.
+    __init__(other: SequenceIterator[T]):
+        self._sequence = other._sequence
+        self._index = other._index
+
+    # Implement the `Iterable` protocol.
+    def iter() -> SequenceIterator[T]:
+        return self
+
+    # Get the next elmenent from the iterator.
+    def next() -> Option[T]:
+        # Get the target index of the value.
+        index = self._index
+
+        # Return an invalid option if the index is out of range.
+        if self._index >= self._sequence.length:
+            return Option[T]()
+
+        # Increment the internal index.
+        self._index = index + 1
+
+        # Return the target value of the iterator.
+        return Option(self._sequence[index])
+
+    _sequence: Sequence[T]
+    _index: UInt64

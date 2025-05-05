@@ -1,0 +1,53 @@
+#------------------------------------------------------------------------------
+# POSTPython Tuple Module
+#
+#
+#------------------------------------------------------------------------------
+from .iterable import Iterable
+from .sequence import Sequence
+from .numbers import Int32, UInt64
+
+
+# The builtin `Tuple` type.
+#
+# A tuple is a fixed-size immutable collection of values.
+#
+# Corresponds to the `(a, b, c)` literal syntax.
+#
+# A `Tuple` is a value type, but its internal buffer is a reference type.
+type Tuple[T]:
+
+    # The length of the tuple, in number of elements.
+    const length: UInt64
+
+    # Default constructor.
+    def __init__() -> None: ...
+
+    # Sequence constructor.
+    #
+    # The new tuple has a new internal buffer populated by the sequence.
+    def __init__(other: Sequence[T]) -> None: ...
+
+    # Iterable constructor.
+    #
+    # The new tuple has a new internal buffer populated by the iterable.
+    def __init__(other: Iterable[T]) -> None: ...
+
+    # Copy constructor.
+    #
+    # The new tuple shares the internal buffer with the other tuple.
+    def __init__(other: Tuple[T]) -> None: ...
+
+    # Get the item at the specified *unsigned* index in the tuple.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __getitem__(index: UInt64) -> T: ...
+
+    # Get the item at the specified *signed* index in the tuple.
+    #
+    # Note that when using signed indexing: if `length > 2^32` some elements
+    # of the array will be inaccessible.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __getitem__(index: Int32) -> T: ...
+

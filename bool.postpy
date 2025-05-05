@@ -1,0 +1,24 @@
+#------------------------------------------------------------------------------
+# POSTPython Bool Module
+#
+#
+#------------------------------------------------------------------------------
+
+
+# The builtin `Bool` type. Denoted by the literals `true` and `false`.
+type Bool:
+
+    # Default constructor.
+    #
+    # The default constructed value is `false`.
+    def __init__(): ...
+
+    # Copy constructor.
+    def __init__(other: Bool): ...
+
+    # Equality comparison. The `==` operator.
+    def __eq__(other: Bool) -> Bool: ...
+
+    # Equality comparison. The `!=` operator.
+    def __ne__(other: Bool) -> Bool: ...
+

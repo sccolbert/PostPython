@@ -1,0 +1,25 @@
+#------------------------------------------------------------------------------
+# POSTPython Sequence Module
+#
+#
+#------------------------------------------------------------------------------
+from .numbers import UInt64
+
+
+# The `Sequence` protocol.
+#
+# A `Sequence` is an object representing an indexable sequence of values.
+#
+# In addition to direct-indexing, it can be used in a `for...in` construct.
+#
+# If an object is both a `Sequence` and an `Iterable`, the `Sequence`
+# protocol will be preferred for iteration as it is assumed to be more
+# efficient.
+protocol Sequence[T]:
+
+    # The length of the sequence, in number of elements.
+    readonly length: UInt64
+
+    # Get the item at the specified index in the sequence.
+    def __getitem__(index: UInt64) -> T: ...
+

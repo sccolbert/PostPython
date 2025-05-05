@@ -1,0 +1,45 @@
+#------------------------------------------------------------------------------
+# POSTPython Slice Module
+#
+#
+#------------------------------------------------------------------------------
+
+
+type Slice:
+
+    #
+    const start: Option[Int64]
+
+    #
+    const stop: Option[Int64]
+
+    #
+    const step: Option[Int64]
+
+    def __init__(stop: Int64):
+        self.start = Option[Int64]()
+        self.stop = Option(stop)
+        self.step = Option[Int64]()
+
+    def __init__(start: Int64, stop: Int64):
+        self.start = Option(start)
+        self.stop = Option(stop)
+        self.step = Option[Int64]()
+
+    def __init__(start: Int64, stop: Int64, step: Int64):
+        self.start = Option(start)
+        self.stop = Option(stop)
+        self.step = Option(step)
+
+    def __init__(start: Option[Int64],
+                 stop: Option[Int64],
+                 step: Option[Int64]):
+        self.start = start
+        self.stop = stop
+        self.step = step
+
+    # Copy constructor
+    def __init__(other: Slice):
+        self.start = other.start
+        self.stop = other.stop
+        self.step = other.step
