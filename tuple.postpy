@@ -6,6 +6,7 @@
 from .iterable import Iterable
 from .numbers import Int64
 from .sequence import Sequence
+from .slice import Slice
 
 
 # The builtin `Tuple` type.
@@ -44,4 +45,15 @@ type Tuple[T]:
     #
     # Indexing out-of-bounds is implementation-defined.
     def __getitem__(index: Int64) -> T: ...
+
+    # Get a slice of the tuple.
+    #
+    # This method mimics the behavior of Python and will not fail due to
+    # indices in the slice being out-of-bounds. It returns a new tuple
+    # based on a "best effort" approach.
+    #
+    # If the slice encompasses the entire tuple in the same order, no
+    # new allocations will be performed. Otherwise, the new tuple will
+    # contain a newly allocated internal buffer.
+    def __getitem__(slice: Slice) -> Tuple[T]: ...
 

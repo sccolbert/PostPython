@@ -6,6 +6,7 @@
 from .iterable import Iterable
 from .numbers import Int64
 from .sequence import Sequence
+from .slice import Slice
 
 
 # The builtin `Array` type.
@@ -46,6 +47,15 @@ type Array[T]:
     #
     # Indexing out-of-bounds is implementation-defined.
     def __getitem__(index: Int64) -> T: ...
+
+    # Get a slice of the array.
+    #
+    # This method mimics the behavior of Python and will not fail due to
+    # indices in the slice being out-of-bounds. It returns a new array
+    # based on a "best effort" approach.
+    #
+    # The new array will always contain a newly allocated internal buffer.
+    def __getitem__(slice: Slice) -> Array[T]: ...
 
     # Set the item at the specified index in the array.
     #
