@@ -31,7 +31,7 @@ type to fit a nominal type is not allowed. Use `protocol` types for
 A `protocol` type is any object that *structurally* meets the definition of
 a `protocol`. Think of this as "explicit" duck-typing, or an interface. This
 will necessarily be slower in-use than nominal types, due the boxing and/or
-virtualization that may be required.
+virtualization that may be required. Protocols cannot be "subclassed".
 
 "Dunder" methods are used to support the language syntax and runtime. They
 are not visible outside of the runtime. This is compiler-enforced.

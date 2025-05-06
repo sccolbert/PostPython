@@ -3,34 +3,47 @@
 #
 #
 #------------------------------------------------------------------------------
+from .numbers import Int64
+from .option import Option
 
 
+# The `Slice` type.
+#
+# A `Slice` object is used to implement the `foo[a:b:c]` syntax, where a
+# `Slice` object is created by the runtime and passed to the container's
+# `__getitem__` method.
 type Slice:
 
-    #
+    # The starting index of the slice (inclusive), if provided.
     const start: Option[Int64]
 
-    #
+    # The stopping index of the slice (exclusive), if provided.
     const stop: Option[Int64]
 
-    #
+    # The step value of the slice, if provided.
     const step: Option[Int64]
 
+    # Construct a slice with just a `stop` value.
+    #
+    # This represents the syntax `foo[:stop]`.
     def __init__(stop: Int64):
-        self.start = Option[Int64]()
-        self.stop = Option(stop)
-        self.step = Option[Int64]()
+        Slice(Option[Int64](), Option(stop), Option[Int64]())
 
+    # Construct a slice with `start` and `stop` values.
+    #
+    # This represents the syntax `foo[start:stop]`.
     def __init__(start: Int64, stop: Int64):
-        self.start = Option(start)
-        self.stop = Option(stop)
-        self.step = Option[Int64]()
+        Slice(Option(start), Option(stop), Option[Int64]())
 
+    # Construct a slice with `start`, `stop`, and `step` values.
+    #
+    # This represents the syntax `foo[start:stop:step]`.
     def __init__(start: Int64, stop: Int64, step: Int64):
-        self.start = Option(start)
-        self.stop = Option(stop)
-        self.step = Option(step)
+        Slice(Option(start), Option(stop), Option(step))
 
+    # Construct a slice from `start`, `stop`, and `step` options.
+    #
+    # This constructor form exists primarily to support the runtime.
     def __init__(start: Option[Int64],
                  stop: Option[Int64],
                  step: Option[Int64]):
@@ -43,3 +56,4 @@ type Slice:
         self.start = other.start
         self.stop = other.stop
         self.step = other.step
+

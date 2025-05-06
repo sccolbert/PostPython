@@ -3,11 +3,13 @@
 #
 #
 #-----------------------------------------------------------------------------
+from .numbers import Int64
 
 
 # The `Range` type.
 #
-# This type is commonly used to emulated index-based `for` loops.
+# This type implements the `Sequence` protocol, and is commonly used to
+# emulate index-based `for` loops.
 type Range:
 	
 	# The starting value of the range, inclusive.
@@ -23,25 +25,25 @@ type Range:
 
 	# The length of the range.
 	#
-	# This will be zero if there are no logical values in the range.
-	const length: Uint64
+	# This will be always be `>= 0`.
+	const length: Int64
 
 	# Construct a `Range` with a `stop` value.
 	#
 	# The `start` value is assumed to be `0`.
 	#
 	# The `step` value is assumed to be `1`.
-	def __init__(stop: Int64) -> None:
+	def __init__(stop: Int64):
 		Range(0, stop, 1)
 
 	# Construct a `Range` with a `start` and `stop` value.
 	#
 	# The `step` value is assumed to be `1`.
-	def __init__(start: Int64, stop: Int64) -> None:
+	def __init__(start: Int64, stop: Int64):
 		Range(start, stop, 1)
 
 	# Construct a `Range` with `start`, `stop`, and `step` values.
-	def __init__(start: Int64, stop: Int64, step: Int64) -> None:
+	def __init__(start: Int64, stop: Int64, step: Int64):
 		# A `zero` step size is a programming error.
 		if step == 0:
 			raise ValueError("Range `step` cannot be zero")
@@ -52,19 +54,22 @@ type Range:
 		self.step = step
 		
 		# Compute the range length. Rely on floor division of Int64 types.
-		#
-		# TODO: handle overflow from large span subtraction.
 		length = (stop - start) / step
 
 		# Clamp the length to `>= 0`.
-		# 
-		# TODO: define a `max` function for numbers to make this easier?
 		self.length = 0 if length < 0 else n
+
+	# Copy constructor.
+	def __init__(other: Range):
+		self.start = other.start
+		self.stop = other.stop
+		self.step = other.step
+		self.length = other.length
 
 	# Get the value of the range at the specified index.
 	#
 	# If the index is out-of-bounds, an exception will be raised.
-	def __getitem__(index: Uint64) -> Int64:
+	def __getitem__(index: Int64) -> Int64:
 		# Indexing a `Range` out-of-bounds is a programming error.
 		if index >= self.length:
 			raise IndexError("Range index out of range")

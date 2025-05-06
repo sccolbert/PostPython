@@ -3,7 +3,7 @@
 #
 #
 #------------------------------------------------------------------------------
-from .numbers import UInt64
+from .numbers import Int64
 
 
 # The `Sequence` protocol.
@@ -18,8 +18,10 @@ from .numbers import UInt64
 protocol Sequence[T]:
 
     # The length of the sequence, in number of elements.
-    readonly length: UInt64
+    readonly length: Int64
 
     # Get the item at the specified index in the sequence.
-    def __getitem__(index: UInt64) -> T: ...
+    #
+    # Negative indexing wraps around from the end of the sequence.
+    def __getitem__(index: Int64) -> T: ...
 

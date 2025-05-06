@@ -4,8 +4,8 @@
 #
 #------------------------------------------------------------------------------
 from .iterable import Iterable
+from .numbers import Int64
 from .sequence import Sequence
-from .numbers import Int32, UInt64
 
 
 # The builtin `Array` type.
@@ -18,41 +18,39 @@ from .numbers import Int32, UInt64
 type Array[T]:
 
     # The length of the array, in number of elements.
-    const length: Uint64
+    #
+    # This is always `>= 0`.
+    const length: Int64
 
     # Default constructor.
-    def __init__() -> None: ...
+    def __init__(): ...
 
     # Sequence constructor.
     #
     # The new array has a new internal buffer populated by the sequence.
-    def __init__(other: Sequence[T]) -> None: ...
+    def __init__(other: Sequence[T]): ...
 
     # Iterable constructor.
     #
     # The new array has a new internal buffer populated by the sequence.
-    def __init__(other: Iterable[T]) -> None: ...
+    def __init__(other: Iterable[T]): ...
 
     # Copy constructor.
     #
     # The new array shares the internal buffer with the other array.
-    def __init__(other: Array[T]) -> None: ...
+    def __init__(other: Array[T]): ...
 
-    # Get the item at the specified *unsigned* index in the array.
+    # Get the item at the specified index in the array.
+    #
+    # Negative indexing wraps around from the end of the array.
     #
     # Indexing out-of-bounds is implementation-defined.
-    def __getitem__(index: Uint64) -> T: ...
-
-    # Get the item at the specified *signed* index in the array.
-    #
-    # Note that when using signed indexing: if `length > 2^32` some elements
-    # of the array will be inaccessible.
-    #
-    # Indexing out-of-bounds is implementation-defined.
-    def __getitem__(index: Int32) -> T: ...
+    def __getitem__(index: Int64) -> T: ...
 
     # Set the item at the specified index in the array.
     #
+    # Negative indexing wraps around from the end of the array.
+    #
     # Indexing out-of-bounds is implementation-defined.
-    def __setitem__(index: Uint64, value: T) -> None: ...
+    def __setitem__(index: Int64, value: T): ...
 

@@ -4,8 +4,8 @@
 #
 #------------------------------------------------------------------------------
 from .iterable import Iterable
+from .numbers import Int64
 from .sequence import Sequence
-from .numbers import Int32, UInt64
 
 
 # The builtin `Tuple` type.
@@ -18,36 +18,30 @@ from .numbers import Int32, UInt64
 type Tuple[T]:
 
     # The length of the tuple, in number of elements.
-    const length: UInt64
+    const length: Int64
 
     # Default constructor.
-    def __init__() -> None: ...
+    def __init__(): ...
 
     # Sequence constructor.
     #
     # The new tuple has a new internal buffer populated by the sequence.
-    def __init__(other: Sequence[T]) -> None: ...
+    def __init__(other: Sequence[T]): ...
 
     # Iterable constructor.
     #
     # The new tuple has a new internal buffer populated by the iterable.
-    def __init__(other: Iterable[T]) -> None: ...
+    def __init__(other: Iterable[T]): ...
 
     # Copy constructor.
     #
     # The new tuple shares the internal buffer with the other tuple.
-    def __init__(other: Tuple[T]) -> None: ...
+    def __init__(other: Tuple[T]): ...
 
-    # Get the item at the specified *unsigned* index in the tuple.
+    # Get the item at the specified index in the tuple.
+    #
+    # Negative indexing wraps around from the end of the tuple.
     #
     # Indexing out-of-bounds is implementation-defined.
-    def __getitem__(index: UInt64) -> T: ...
-
-    # Get the item at the specified *signed* index in the tuple.
-    #
-    # Note that when using signed indexing: if `length > 2^32` some elements
-    # of the array will be inaccessible.
-    #
-    # Indexing out-of-bounds is implementation-defined.
-    def __getitem__(index: Int32) -> T: ...
+    def __getitem__(index: Int64) -> T: ...
 

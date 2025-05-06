@@ -2,7 +2,29 @@
 # POSTPython Itertools Module
 #
 #
-#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------
+from .iterable import Iterator
+from .numbers import Int64
+from .option import Option
+from .sequence import Sequence
+
+
+# Create an iterator from an `Iterable` object.
+#
+# This function simply calls the `iter()` method of the `Iterable` object.
+# It exists so that the `Sequence` overload version of this function allows
+# user code to uniformally create iterators from iterables and sequences.
+def iter[T](iterable: Iterable[T]) -> Iterator[T]:
+    return iterable.iter()
+
+
+# Create an iterator from a `Sequence` object.
+#
+# This wraps any object implementing the `Sequence` protocol with a
+# `SequenceIterator` so that it can be treated like any other iterator.
+def iter[T](sequence: Sequence[T]) -> SequenceIterator[T]:
+    return SequenceIterator(sequence)
+
 
 # The `SequenceIterator` object.
 #
@@ -11,8 +33,6 @@
 type SequenceIterator[T]:
 
     # Construct an iterator for a `Sequence` object.
-    #
-    # @param sequence - The sequence object to iterate.
     __init__(sequence: Sequence[T]):
         self._sequence = sequence
         self._index = 0
@@ -42,4 +62,5 @@ type SequenceIterator[T]:
         return Option(self._sequence[index])
 
     _sequence: Sequence[T]
-    _index: UInt64
+    _index: Int64
+
