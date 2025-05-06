@@ -48,9 +48,12 @@ There is not concept of "protected" or "friend" like in C++.
 At the module level, "Leading-underscore" names are private to the module
 and cannot be exported.
 
-Destructors will be supported, and guaranteed to be called, even with the
-presence of exceptions. This will support RAII as in C++, and eliminates
-the need for the `with` construct from Python.
+Destructors would be nice, but that increases implementation complexity
+and doesn't really make sense for GC'd reference types. Modern GC systems
+support "finalizers" that could work. But really I want something that
+enables something like RAII in C++ for guaranteeing cleanup on function
+exit. Maybe we have some sort of "exit" block that is guranteed to be
+called on function exit.
 
 `readonly` attributes. Current thoughts are that they are `readonly` by
 code which "consumes" the type or class. They can be modified by the
