@@ -8,12 +8,13 @@ from .numbers import Int64
 
 # The builtin type-and-size aware heap memory allocator for PostPython.
 #
-# The buffer object is a reference type and cannot be subclassed.
+# The buffer object is a `final` reference type and cannot be subclassed.
 #
 # This type is intentionally low-level and does not provide any convenience
-# methods. This makes it easier to implement and optimize by a backend. It
-# is intended for use by higher level container types that require finer
-# grained control over memory allocation.
+# methods. This does two things:
+#   1) It makes it easier to implement and optimize by a backend.
+#   2) It discourages its use by user code and encourages users
+#      to user the higher level library types instead.
 final
 class Buffer[T]:
 
@@ -59,7 +60,7 @@ class Buffer[T]:
     # Assigning at `index > length` is a programming error and the behavior
     # is implementation-defined.
     #
-    # Indexing with negative values is a programming error and the
-    # behavior is implementation defined.
+    # Indexing with negative values is a programming error and the behavior
+    # is implementation defined.
     def __setitem__(index: Int64, value: T): ...
 
