@@ -16,20 +16,11 @@ from .bool import Bool
 #
 # In general, POSTPython takes the approach that exceptions should not
 # be used for control flow.
+#
+# If an `Option` tests boolean `false` it will *always* be invalid.
+#
+# If an `Option` tests boolean `true` it will *always* be valid.
 type Option[T]:
-
-    # Whether the `Option` object contains a `value`.
-    #
-    # If this is `true`, `value` is guaranteed to exist.
-    const valid: Bool
-
-    # The value of the `Option` object.
-    #
-    # This *only* exists if `valid` is `true`.
-    #
-    # If `valid` is `false`, accessing `value` will throw an exception.
-    const value: T
-
     # Default constructor.
     #
     # This constructs a `false` option object.
@@ -42,4 +33,12 @@ type Option[T]:
 
     # Copy constructor.
     def __init__(other: Option[T]): ...
+
+    # Unpack the `Option` object and return the value.
+    #
+    # If the `Option` tests `false` this will throw an exception.
+    def __call__() -> T: ...
+
+    # Boolean conversion.
+    def __convert__() -> Bool: ...
 
