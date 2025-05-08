@@ -3,7 +3,7 @@
 #
 #
 #------------------------------------------------------------------------------
-from .iterable import Iterator
+from .iterable import Iterable, Iterator
 from .numbers import Int64
 from .option import Option
 from .sequence import Sequence
@@ -47,11 +47,11 @@ type SequenceIterator[T]:
         index = self._index
 
         # Return an invalid option if the index is out of range.
-        if self._index >= self._sequence.length:
+        if index >= self._sequence.length:
             return Option[T]()
 
         # Increment the internal index.
-        self._index = index + 1
+        self._index += 1
 
         # Return the target value of the iterator.
         return Option(self._sequence[index])

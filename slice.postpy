@@ -11,7 +11,10 @@ from .option import Option
 #
 # A `Slice` object is used to implement the `foo[a:b:c]` syntax, where a
 # `Slice` object is created by the runtime and passed to the container's
-# `__getitem__` method.
+# `__getitem__` or `__setitem__` methods.
+#
+# While user code *can* use a `Slice` object directly as-needed, it is
+# typically not required for most code.
 type Slice:
 
     # The starting index of the slice (inclusive), if provided.

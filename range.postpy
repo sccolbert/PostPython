@@ -1,9 +1,10 @@
-#-----------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # POSTPython Range Module
 #
 #
-#-----------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 from .numbers import Int64
+from .panic import panic
 
 
 # The `Range` type.
@@ -43,10 +44,12 @@ type Range:
 		Range(start, stop, 1)
 
 	# Construct a `Range` with `start`, `stop`, and `step` values.
+	#
+	# A `step` value of zero will cause a panic.
 	def __init__(start: Int64, stop: Int64, step: Int64):
 		# A `zero` step size is a programming error.
 		if step == 0:
-			raise ValueError("Range `step` cannot be zero")
+			panic "Range `step` cannot be zero"
 		
 		# Initialize the simple member fields.
 		self.start = start
@@ -54,6 +57,10 @@ type Range:
 		self.step = step
 		
 		# Compute the range length. Rely on floor division of Int64 types.
+		#
+		# TODO ensure computed length is valid for signed types and double
+		# check for negative start/stop/step logic. It's likely that this
+		# is wrong at the moment.
 		length = (stop - start) / step
 
 		# Clamp the length to `>= 0`.
@@ -61,12 +68,22 @@ type Range:
 
 	# Get the value of the range at the specified index.
 	#
-	# If the index is out-of-bounds, an exception will be raised.
+	# Negative indexing will wrap around at the end of the `Range`.
+	#
+	# Indexing out of bounds will cause a panic.
 	def __getitem__(index: Int64) -> Int64:
+		# Wrap around for negative indices.
+		if index < 0:
+			index += self.length
+
 		# Indexing a `Range` out-of-bounds is a programming error.
-		if index >= self.length:
-			raise IndexError("Range index out of range")
+		if index < 0 or index >= self.length:
+			panic "Range `index` out of range"
 
 		# Compute the indexed value.
+		#
+		# TODO ensure computed value is valid for signed types and double
+		# check for negative start/stop/step logic. It's likely that this
+		# is wrong at the moment.
 		return self.start + index * self.step
 

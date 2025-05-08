@@ -64,3 +64,9 @@ type Array[T]:
     # Indexing out-of-bounds is implementation-defined.
     def __setitem__(index: Int64, value: T): ...
 
+    # Set a slice of the array from an array.
+    #
+    # This method mimics the behavior of Python and will not fail due to
+    # indices in the slice being out-of-bounds. It assigns the values to
+    # the array on based on a "best effort" approach.
+    def __setitem__(slice: Slice, other: Array[T]): ...
