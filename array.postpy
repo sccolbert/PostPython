@@ -28,7 +28,7 @@ type Array[T]:
 
     # Copy constructor.
     #
-    # The new array has a new internal buffer populated by the array.
+    # The new array has a new internal buffer populated by the other array.
     def __init__(other: Array[T]): ...
 
     # Sequence constructor.

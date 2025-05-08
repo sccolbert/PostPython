@@ -17,7 +17,7 @@ class Vector[T]:
 
     # Copy constructor.
     #
-    # The new vector has a new internal buffer populated by the vector.
+    # The new vector has a new internal buffer populated by the other vector.
     def __init__(other: Vector[T]) -> None:
         self._buffer = Buffer(other._buffer)
 

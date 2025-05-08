@@ -26,7 +26,7 @@ type Tuple[T]:
 
     # Copy constructor.
     #
-    # The new tuple has a new internal buffer populated by the tuple.
+    # The new tuple has a new internal buffer populated by the other tuple.
     def __init__(other: Tuple[T]): ...
 
     # Sequence constructor.

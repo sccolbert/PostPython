@@ -14,7 +14,10 @@ from .numbers import Int64
 # methods. This does two things:
 #   1) It makes it easier to implement and optimize by a backend.
 #   2) It discourages its use by user code and encourages users
-#      to user the higher level library types instead.
+#      to use the higher level library containers instead.
+#
+# That said, this class *can* be used by low level code for finer-grained
+# control over memory allocation.
 final
 class Buffer[T]:
 
@@ -40,7 +43,7 @@ class Buffer[T]:
 
     # Copy constructor.
     #
-    # The new buffer has a new internal buffer populated by the buffer.
+    # The new buffer has a new internal buffer populated by the other buffer.
     def __init__(other: Buffer[T]): ...
 
     # Resize copy constructor with new `capacity`.
