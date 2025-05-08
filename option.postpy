@@ -31,9 +31,6 @@ type Option[T]:
     # This constructs a `true` option object with the given `value`.
     def __init__(value: T): ...
 
-    # Copy constructor.
-    def __init__(other: Option[T]): ...
-
     # Unpack the `Option` object and return the value.
     #
     # If the `Option` tests `false` this will throw an exception.

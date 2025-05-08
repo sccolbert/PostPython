@@ -51,9 +51,3 @@ type Slice:
         self.stop = stop
         self.step = step
 
-    # Copy constructor
-    def __init__(other: Slice):
-        self.start = other.start
-        self.stop = other.stop
-        self.step = other.step
-

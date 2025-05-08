@@ -37,11 +37,6 @@ type SequenceIterator[T]:
         self._sequence = sequence
         self._index = 0
 
-    # Copy constructor.
-    __init__(other: SequenceIterator[T]):
-        self._sequence = other._sequence
-        self._index = other._index
-
     # Implement the `Iterable` protocol.
     def iter() -> SequenceIterator[T]:
         return self

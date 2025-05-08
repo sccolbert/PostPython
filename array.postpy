@@ -26,6 +26,11 @@ type Array[T]:
     # Default constructor.
     def __init__(): ...
 
+    # Copy constructor.
+    #
+    # The new array has a new internal buffer populated by the array.
+    def __init__(other: Array[T]): ...
+
     # Sequence constructor.
     #
     # The new array has a new internal buffer populated by the sequence.
@@ -33,13 +38,8 @@ type Array[T]:
 
     # Iterable constructor.
     #
-    # The new array has a new internal buffer populated by the sequence.
+    # The new array has a new internal buffer populated by the iterable.
     def __init__(other: Iterable[T]): ...
-
-    # Copy constructor.
-    #
-    # The new array shares the internal buffer with the other array.
-    def __init__(other: Array[T]): ...
 
     # Get the item at the specified index in the array.
     #

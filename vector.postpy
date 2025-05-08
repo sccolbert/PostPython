@@ -3,8 +3,8 @@
 #
 #
 #------------------------------------------------------------------------------
+from .buffer import Buffer
 from .range import Range
-from .sequence import SequenceIterator
 
 
 #
@@ -15,22 +15,25 @@ class Vector[T]:
     def __init__() -> None:
         self._buffer = Buffer[T]()
 
+    # Copy constructor.
+    #
+    # The new vector has a new internal buffer populated by the vector.
+    def __init__(other: Vector[T]) -> None:
+        self._buffer = Buffer(other._buffer)
+
     # Sequence constructor.
     #
-    # Construct a vector copy of the given sequence.
+    # The new vector has a new internal buffer populated by the sequence.
     def __init__(other: Sequence[T]) -> None:
         self._buffer = Buffer[T](other.length)
         self.extend(other)
 
     # Iterable constructor.
     #
-    # Construct a vector copy of the given iterable.
+    # The new vector has a new internal buffer populated by the iterable.
     def __init__(other: Iterable[T]) -> None:
         self._buffer = Buffer[T]()
         self.extend(other)
-
-    def __iter__() -> Iterator[T]:
-        return SequenceIterator(self)
 
     # Retrieve an element from the vector.
     #

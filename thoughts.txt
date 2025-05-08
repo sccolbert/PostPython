@@ -5,10 +5,9 @@ General Thoughts:
 Objects declared with `type` are value types. They are always allocated on
 the stack or within the allocated space of another object. They have the
 same semantics as `C` value types in that they are passed by value and are
-structurally copied on assignment. They *must* have a copy constructor.
-This is required for assigning types to variables and to internal memory
-buffers. They may hold reference types as fields, however these references
-are subject to garbage collection rules.
+structurally copied on assignment. The user does not have control of the
+copy-on-assignment behavior.
+
 
 Objects declared with `class` are reference types. They are always allocated
 on the heap. They have the same semantics as `C` pointers in that they are

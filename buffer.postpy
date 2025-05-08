@@ -35,8 +35,21 @@ class Buffer[T]:
 
     # Construct a `Buffer` object to hold `capcity` elements.
     #
-    # The `length` of the buffer will be zero.
-    def __init__(length: Int64): ...
+    # The initial `length` of the buffer will be zero.
+    def __init__(capacity: Int64): ...
+
+    # Copy constructor.
+    #
+    # The new buffer has a new internal buffer populated by the buffer.
+    def __init__(other: Buffer[T]): ...
+
+    # Resize copy constructor with new `capacity`.
+    #
+    # The new buffer has a new internal buffer populated by the buffer.
+    #
+    # Only logically "live" elements are copied into the new internal
+    # buffer subject to the new `capacity` value.
+    def __init__(other: Buffer[T], capacity: Int64): ...
 
     # Get the element at the specified buffer index.
     #
@@ -55,7 +68,8 @@ class Buffer[T]:
     # index.
     #
     # Assigning to `index == length` will grow the `length` by `1` provided
-    # there is sufficient `capacity`.
+    # there is sufficient `capacity`. If the buffer is full, the behavior
+    # implementation-defined.
     #
     # Assigning at `index > length` is a programming error and the behavior
     # is implementation-defined.

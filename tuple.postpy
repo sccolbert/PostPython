@@ -24,6 +24,11 @@ type Tuple[T]:
     # Default constructor.
     def __init__(): ...
 
+    # Copy constructor.
+    #
+    # The new tuple has a new internal buffer populated by the tuple.
+    def __init__(other: Tuple[T]): ...
+
     # Sequence constructor.
     #
     # The new tuple has a new internal buffer populated by the sequence.
@@ -33,11 +38,6 @@ type Tuple[T]:
     #
     # The new tuple has a new internal buffer populated by the iterable.
     def __init__(other: Iterable[T]): ...
-
-    # Copy constructor.
-    #
-    # The new tuple shares the internal buffer with the other tuple.
-    def __init__(other: Tuple[T]): ...
 
     # Get the item at the specified index in the tuple.
     #
