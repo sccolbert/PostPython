@@ -9,14 +9,12 @@ from .sequence import Sequence
 from .slice import Slice
 
 
-# The builtin `Tuple` type.
+# The builtin `Tuple` class.
 #
 # A tuple is a fixed-size immutable collection of values.
 #
 # Corresponds to the `(a, b, c)` literal syntax.
-#
-# A `Tuple` is a value type, but its internal buffer is a reference type.
-type Tuple[T]:
+class Tuple[T]:
 
     # The length of the tuple, in number of elements.
     const length: Int64
@@ -51,9 +49,5 @@ type Tuple[T]:
     # This method mimics the behavior of Python and will not fail due to
     # indices in the slice being out-of-bounds. It returns a new tuple
     # based on a "best effort" approach.
-    #
-    # If the slice encompasses the entire tuple in the same order, no
-    # new allocations will be performed. Otherwise, the new tuple will
-    # contain a newly allocated internal buffer.
     def __getitem__(slice: Slice) -> Tuple[T]: ...
 

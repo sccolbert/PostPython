@@ -8,7 +8,7 @@ from .numbers import Int64
 
 # The builtin type-and-size aware heap memory allocator for PostPython.
 #
-# The buffer object is a `final` reference type and cannot be subclassed.
+# A `Buffer` object is a reference type.
 #
 # This type is intentionally low-level and does not provide any convenience
 # methods. This does two things:
@@ -18,7 +18,6 @@ from .numbers import Int64
 #
 # That said, this class *can* be used by low level code for finer-grained
 # control over memory allocation.
-final
 class Buffer[T]:
 
     # The capacity of the buffer in number of `T` elements.

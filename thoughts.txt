@@ -32,17 +32,20 @@ a `protocol`. Think of this as "explicit" duck-typing, or an interface. This
 will necessarily be slower in-use than nominal types, due the boxing and/or
 virtualization that may be required. Protocols cannot be "subclassed".
 
+Thinking about not supporting subclassing at all, and using protocols for
+all "virtualization". This is easier to implement and leads to more explicit
+code. It also aligns with Rust and Go, which are the current rage. Also
+easier to optimize since the structure of "nominal" types is known ahead
+of time. Also maps better to C. Also easier to teach: value types are just
+that. Class types are references, with no virtualization. Protocols then
+become the "one-way" to handle virtualization. The more I think about this,
+the better the idea becomes. It's not "pythonic", but I having worked on a
+production 4+M line codebase of Python, this would prevent a lot of problems
+
 "Dunder" methods are used to support the language syntax and runtime. They
 are not visible outside of the runtime. This is compiler-enforced.
 
 "Leading-underscore" names are private to the nominal `type` or `class`.
-They are not visible to outside code *or* to sublcasses. Private name
-shadowing is allowed in subclasses and the types may be different.
-
-Public name shadowing is allowed in subclasses, but the type signatures
-must be consistent throughout the class hierarchy.
-
-There is not concept of "protected" or "friend" like in C++.
 
 At the module level, "Leading-underscore" names are private to the module
 and cannot be exported.

@@ -9,14 +9,12 @@ from .sequence import Sequence
 from .slice import Slice
 
 
-# The builtin `Array` type.
+# The builtin `Array` class.
 #
 # An array is a fixed-size mutable collection of values.
 #
 # Corresponds to the `[a, b, c]` literal syntax.
-#
-# An `Array` is a value type, but its internal buffer is a reference type.
-type Array[T]:
+class Array[T]:
 
     # The length of the array, in number of elements.
     #
@@ -53,8 +51,6 @@ type Array[T]:
     # This method mimics the behavior of Python and will not fail due to
     # indices in the slice being out-of-bounds. It returns a new array
     # based on a "best effort" approach.
-    #
-    # The new array will always contain a newly allocated internal buffer.
     def __getitem__(slice: Slice) -> Array[T]: ...
 
     # Set the item at the specified index in the array.
