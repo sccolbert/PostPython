@@ -28,8 +28,8 @@ class Buffer[T]:
     #
     # The `length` is number of valid elements in the buffer.
     #
-    # The `buffer` length will grow up to `capcity` as elements are assigned
-    # to `index >= length` at which point it will cease to grow.
+    # The buffer `length` will grow up to `capacity` as elements are assigned
+    # to `index == length` at which point it will cease to grow.
     #
     # It is not possible to create "gaps" in the buffer with uninitialized
     # values.
@@ -44,48 +44,12 @@ class Buffer[T]:
 
     # Copy constructor.
     #
-    # The new buffer has internal memory populated by the other buffer.
+    # The new buffer has internal memory populated by the other object.
     #
     # The `capacity` of the new buffer will equal its `length`.
     def __init__(other: Buffer[T]): ...
-
-    # Copy constructor with new `capacity`.
-    #
-    # The new buffer has internal memory populated by the other buffer.
-    #
-    # The new `capacity` will equal the specified capacity. Only up-to
-    # `capacity` elements are copied from the other buffer.
-    def __init__(other: Buffer[T], capacity: Int64): ...
-
-    # Sequence constructor.
-    #
-    # The new buffer has internal memory populated by the sequence.
-    #
-    # The `capacity` of the new buffer will equal its `length`.
     def __init__(other: Sequence[T]): ...
-
-    # Sequence constructor with new `capacity`.
-    #
-    # The new buffer has internal memory populated by the sequence.
-    #
-    # The new `capacity` will equal the specified capacity. Only up-to
-    # `capacity` elements are copied from the sequence.
-    def __init__(other: Sequence[T], capacity: Int64): ...
-
-    # Iterable constructor.
-    #
-    # The new buffer has internal memory populated by the iterable.
-    #
-    # The `capacity` of the new buffer will equal its `length`.
     def __init__(other: Iterable[T]): ...
-
-    # Iterable constructor with new `capacity`.
-    #
-    # The new buffer has internal memory populated by the iterable.
-    #
-    # The new `capacity` will equal the specified capacity. Only up-to
-    # `capacity` elements are copied from the sequence.
-    def __init__(other: Iterable[T], capacity: Int64): ...
 
     # Get the element at the specified buffer index.
     #
@@ -108,25 +72,13 @@ class Buffer[T]:
     # Compiler flags control bounds-checking of this access.
     def __setitem__(index: Int64, value: T): ...
 
-    # Set a slice of the buffer from a buffer.
+    # Set a slice of the buffer from an object.
     #
     # This method mimics the behavior of `__getitem__(Slice)` and will not
     # fail based on out-of-bounds or out-of-length access. It operates on a
     # "best effort" approach.
     def __setitem__(slice: Slice, other: Buffer[T]): ...
-
-    # Set a slice of the buffer from a `Sequence`.
-    #
-    # This method mimics the behavior of `__getitem__(Slice)` and will not
-    # fail based on out-of-bounds or out-of-length access. It operates on a
-    # "best effort" approach.
     def __setitem__(slice: Slice, other: Sequence[T]): ...
-
-    # Set a slice of the buffer from an `Iterable`.
-    #
-    # This method mimics the behavior of `__getitem__(Slice)` and will not
-    # fail based on out-of-bounds or out-of-length access. It operates on a
-    # "best effort" approach.
     def __setitem__(slice: Slice, other: Iterable[T]): ...
 
     # Trim the `length` of the buffer to the given new value.
@@ -157,7 +109,7 @@ class Buffer[T]:
     # This may increase the `length` of the buffer but will not change
     # its `capacity`.
     #
-    # In no case will "gaps" be allowed to appear in the buffer.
+    # In no case will gaps be allowed to appear in the buffer.
     #
     # This method is *always* internally bounds-checked.
     def move(src: Int64, dst: Int64, count: Int64): ...

@@ -17,6 +17,8 @@ from .slice import Slice
 class Tuple[T]:
 
     # The length of the tuple, in number of elements.
+    #
+    # This is always `>= 0`.
     const length: Int64
 
     # Default constructor.
@@ -24,17 +26,9 @@ class Tuple[T]:
 
     # Copy constructor.
     #
-    # The new tuple internal memory populated by the other tuple.
+    # The new tuple has internal memory populated by the other object.
     def __init__(other: Tuple[T]): ...
-
-    # Sequence constructor.
-    #
-    # The new tuple internal memory populated by the sequence.
     def __init__(other: Sequence[T]): ...
-
-    # Iterable constructor.
-    #
-    # The new tuple internal memory populated by the iterable.
     def __init__(other: Iterable[T]): ...
 
     # Get the item at the specified index in the tuple.

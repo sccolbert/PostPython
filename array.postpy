@@ -26,17 +26,9 @@ class Array[T]:
 
     # Copy constructor.
     #
-    # The new array has internal memory populated by the other array.
+    # The new array has internal memory populated by the other object.
     def __init__(other: Array[T]): ...
-
-    # Sequence constructor.
-    #
-    # The new array has internal memory populated by the sequence.
     def __init__(other: Sequence[T]): ...
-
-    # Iterable constructor.
-    #
-    # The new array has internal memory populated by the iterable.
     def __init__(other: Iterable[T]): ...
 
     # Get the item at the specified index in the array.
@@ -60,24 +52,12 @@ class Array[T]:
     # Indexing out-of-bounds is implementation-defined.
     def __setitem__(index: Int64, value: T): ...
 
-    # Set a slice of the array from an array.
+    # Set a slice of the array from an object.
     #
     # This method mimics the behavior of `__getitem__(Slice)` and will not
     # fail based on out-of-bounds or out-of-length access. It operates on a
     # "best effort" approach.
     def __setitem__(slice: Slice, other: Array[T]): ...
-
-    # Set a slice of the array from a `Sequence`.
-    #
-    # This method mimics the behavior of `__getitem__(Slice)` and will not
-    # fail based on out-of-bounds or out-of-length access. It operates on a
-    # "best effort" approach.
     def __setitem__(slice: Slice, other: Sequence[T]): ...
-
-    # Set a slice of the array from an `Iterable`.
-    #
-    # This method mimics the behavior of `__getitem__(Slice)` and will not
-    # fail based on out-of-bounds or out-of-length access. It operates on a
-    # "best effort" approach.
     def __setitem__(slice: Slice, other: Iterable[T]): ...
 
