@@ -5,12 +5,20 @@
 #------------------------------------------------------------------------------
 
 
+# Compute the minimum of two values.
 #
+# The values must be `<` comparable.
+#
+# If `a` is equal to `b`, `a` will be returned.
 def min[T](a: T, b: T) -> T:
     return b if b < a else a
 
 
+# Compute the maximum of two values.
 #
+# The values must be `<` comparable.
+#
+# If `a` is equal to `b`, `a` will be returned.
 def max[T](a: T, b: T) -> T:
     return b if a < b else a
 
