@@ -83,7 +83,10 @@ class Buffer[T]:
 
     # Trim the `length` of the buffer to the given new value.
     #
-    # If the new `length` is `>=` the current `length` this is a no-op.
+    # If the new length is `>= length` this is a no-op.
+    #
+    # If the new length is `< 0` that new length will be added to the
+    # existing `length` to determine the final trim length.
     #
     # This method does not change the capacity of the buffer, nor does
     # it reallocate memory. But it *does* allow the GC to collect stale

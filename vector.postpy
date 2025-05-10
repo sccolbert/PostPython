@@ -3,122 +3,276 @@
 #
 #
 #------------------------------------------------------------------------------
+from .algorithm import max, min
 from .buffer import Buffer
+from .numbers import Int64
 from .range import Range
 
 
 #
+#
+# Note: For performance, a `Vector` never implicitly shrinks it's `capacity`.
+#       That must be done manually by user code by calling `shrink`.
 class Vector[T]:
+    # Get the current length of the vector.
+    #
+    # TODO havent yet figured out the syntax for computed properties.
+    get length() -> Int64:
+        return self._buffer.length
+
+    # Get the current capacity of the vector.
+    #
+    # TODO havent yet figured out the syntax for computed properties.
+    get capacity() -> Int64:
+        return self._buffer.capacity
+
     # Default constructor.
     #
-    # Construct a new empty vector.
-    def __init__() -> None:
-        self._buffer = Buffer[T]()
+    # Construct a new vector with an initial capacity.
+    #
+    # The default capacity of a vector is `0`.
+    def __init__(capacity: Int64 = 0):
+        self._buffer = Buffer[T](capacity)
 
     # Copy constructor.
     #
     # The new vector has a new internal buffer populated by the other vector.
-    def __init__(other: Vector[T]) -> None:
+    def __init__(other: Vector[T]):
         self._buffer = Buffer(other._buffer)
 
-    # Sequence constructor.
+    # Sequence/Iterable constructor.
     #
-    # The new vector has a new internal buffer populated by the sequence.
-    def __init__(other: Sequence[T]) -> None:
-        self._buffer = Buffer[T](other.length)
-        self.extend(other)
-
-    # Iterable constructor.
-    #
-    # The new vector has a new internal buffer populated by the iterable.
-    def __init__(other: Iterable[T]) -> None:
-        self._buffer = Buffer[T]()
-        self.extend(other)
+    # The new vector has a new internal buffer populated by the other object.
+    def __init__(other: Sequence[T]):
+    def __init__(other: Iterable[T]):
+        self._buffer = Buffer(other)
 
     # Retrieve an element from the vector.
     #
-    # Indexing out-of-bounds is implementation defined.
-    def __getitem___(index: Uint64) -> T:
+    # Negative indices wrap around from the end of the vector.
+    def __getitem___(index: Int64) -> T:
         return self._buffer[index]
 
     # Set an element in the vector.
     #
-    # Indexing out-of-bounds is implementation defined.
-    def __setitem__(index: Uint64, value: T) -> None:
+    # Negative indices wrap around from the end of the vector.
+    def __setitem__(index: Int64, value: T):
         self._buffer[index] = value
 
-    # Get the current length of the vector.
-    get length() -> Uint64:
-        return self._buffer.length
+    # Trim the contents of the vector to the specified `length`.
+    #
+    # This does not change the capacity of the vector, but it does allow
+    # the logically "stale" elements to be garbage collected.
+    #
+    # If the new length is `< 0` that new length will be added to the
+    # existing `length` to determine the final trim length.
+    #
+    # This can only reduce the vector's `length`, not increase it.
+    def trim(length: Int64 = 0):
+        self._buffer.trim(length)
 
-    # Clear the contents of the vector and set its `length` to `zero`.
-    def clear() -> None:
-        self._buffer.resize(0)
+    # Grow the `capacity` of the vector to a new value.
+    #
+    # This can be used to pre-allocate space in the vector before performing
+    # large additions, thereby reducing internal reallocations.
+    #
+    # This can only increase the vector's `capacity`, not reduce it.
+    #
+    # The current `length` of the vector does not change.
+    def grow(capacity: Int64):
+        self._buffer.resize(max(self._buffer.capacity, capacity))
 
-    # Add an element to the end of the vector.
-    def push(value: T) -> None:
-        # Resize the buffer if needed.
-        if self._buffer.length == self._buffer.capacity:
-            self._buffer.resize(self._buffer.length * 2)
+    # Shrink the `capacity` of the vector to a new value.
+    #
+    # This may change the `length` of the vector and allow the logcially
+    # "stale" elements to be garbage collected.
+    #
+    # This can only reduce the vector's `capacity`, not increase it.
+    def shrink(capacity: Int64):
+        self._buffer.resize(min(self._buffer.capacity, capacity))
 
-        # Capacity is availble, assign to the end of the buffer.
+    # Get the element at the front of the vector.
+    def front() -> T:
+        return self._buffer[0]
+
+    # Get the element at the back of the vector.
+    def back() -> T:
+        return self._buffer[-1]
+
+    # Insert an element at the end of the vector.
+    #
+    # This will grow the capacity of the vector as needed.
+    def push_back(value: T):
+        # Grow the buffer capacity if needed.
+        self._maybe_grow(1)
+
+        # Assign the value to end of the buffer.
         self._buffer[self._buffer.length] = value
 
-    def pop() -> T:
-        # Bail if the vector is empty.
-        if self._buffer.length == 0:
-            raise IndexError("Pop from empty Vector")
+    # Remove the element at the end of the vector.
+    #
+    # This will not change the `capacity` of the vector.
+    def pop_back() -> T:
+        # Fetch the last element.
+        value = self._buffer[-1]
 
-        # Fetch the last value in the buffer.
-        last = self._buffer[self._buffer.length - 1]
+        # Trim the length of the buffer.
+        self._buffer.trim(-1)
 
-        # Resize the buffer.
-        self._buffer.resize(self._buffer.length - 1)
+        # Return the pop'd value
+        return value
 
-        # Return the pop'd value.
-        return last
+    # Insert a value into the vector.
+    #
+    # Negative indices wrap around from the end of the vector.
+    #
+    # This will grow the capacity of the vector as needed.
+    def insert(index: Int64, value: T):
+        # Wraparound negative indices.
+        if index < 0:
+            index += self._buffer.length
 
-    def insert(index: Uint64, value: T) -> None:
-        # Bail if the index is invalid.
-        if index > self._buffer.length:
-            raise IndexError("Insert beyond end of Vector")
+        # Ensure a valid index.
+        if index < 0 or index > self._buffer.length:
+            panic "Invalid `index` for `Vector.insert()`"
 
-        # Perform a push if it makes sense.
-        if index == self._buffer.length:
-            self.push(value)
-            return
+        # Grow the buffer if needed.
+        self._maybe_grow(1)
 
-        # Resize the buffer if needed.
-        if self._buffer.length == self._buffer.capacity:
-            self._buffer.resize(n * 2)
+        # Move elements forward in the buffer if needed.
+        if index < self._buffer.length:
+            count = self._buffer.length - index
+            self._buffer.move(index, index + 1, count)
 
-        # Copy the trailing values to their new locations.
-        #
-        # This will call the copy constructors and destructors
-        # for the moved value types.
-        #
-        # TODO: check this math.
-        for i in Range(self._buffer.length - 1, index - 1, -1):
-            self._buffer[i] = self._buffer[i - 1]
-
-        # Insert the new value at the specified index.
+        # Assign the value at the specified index.
         self._buffer[index] = value
 
-    def extend(other: Sequence[T]) -> None:
-        self.splice(self._buffer.length, other)
+    # Insert the content from another vector at a given index.
+    #
+    # Negative indices wrap around from the end of the vector.
+    #
+    # This will grow the capacity of the vector as needed.
+    def insert(index: Int64, other: Vector[T]):
+        self.insert(index, other._buffer)
 
-    def extend(other: Iterable[T]) -> None:
-        self.splice(self._buffer.length, other)
+    # Insert the content from an iterable at a given index.
+    #
+    # Negative indices wrap around from the end of the vector.
+    #
+    # This will grow the capacity of the vector as needed.
+    #
+    # Note: For large iterables, this may be expensive since the iterable
+    #       must first be exhausted by copying into a temporary buffer in
+    #       order to determine its final size.
+    def insert(index: Int64, other: Iterable[T]):
+        self.insert(index, Buffer(other))
 
-    def splice(index: Uint64, other: Sequence[T]) -> None:
-        # TODO Implement
-        pass
+    # Insert the content from an object into the vector.
+    #
+    # Negative indices wrap around from the end of the vector.
+    #
+    # This will grow the capacity of the vector as needed.
+    def insert(index: Int64, other: Buffer[T]):
+    def insert(index: Int64, other: Sequence[T]):
+        # Wraparound negative indices.
+        if index < 0:
+            index += self._buffer.length
 
-    def splice(index: Uint64, Iterable[T]) -> None:
-        # TODO Implement
-        pass
+        # Ensure a valid index.
+        if index < 0 or index > self._buffer.length:
+            panic "Invalid `index` for `Vector.insert()`"
+
+        # Bail early if there is nothing to insert.
+        if other.length <= 0:
+            return
+
+        # Grow the buffer if needed.
+        self._maybe_grow(other.length)
+
+        # Calculate the stop index, exclusive.
+        stop = index + other.length
+
+        # Move elements forward in the buffer if needed.
+        if index < self._buffer.length:
+            count = self._buffer.length - index
+            self._buffer.move(index, stop, count)
+
+        # Write the elements to the buffer.
+        self._buffer[index:stop] = other
+
+    # Insert content from an object at the end of the vector.
+    #
+    # Negative indices wrap around from the end of the vector.
+    #
+    # This will grow the capacity of the vector as needed.
+    def extend(other: Buffer[T]):
+    def extend(other: Vector[T]):
+    def extend(other: Sequence[T]):
+    def extend(other: Iterable[T]):
+        self.insert(self._buffer.length, other)
+
+    # Remove `count` elements from the vector starting at `index`.
+    #
+    # Negative indices wrap around from the end of the vector.
+    #
+    # This will not change the `capacity` of the vector.
+    def remove(index: Int64, count: Int64 = 1):
+        # Wraparound negative indices.
+        if index < 0:
+            index += self._buffer.length
+
+        # Ensure a valid index.
+        if index < 0 or index >= self._buffer.length:
+            panic "Invalid `index` for `Vector.remove()`"
+
+        # Clamp the count to the minimum logical value.
+        count = min(count, self._buffer.length - index)
+
+        # Bail early if there is nothing to remove.
+        if count <= 0:
+            return
+
+        # Calculate the src index for a move.
+        src = index + count
+
+        # Perform a simple trim if possible.
+        if (src >= self._buffer.length):
+            self._buffer.trim(index)
+            return
+
+        # Move remaining elements backward in the buffer.
+        tailcount = self._buffer.length - src
+        self._buffer.move(src, index, tailcount)
+
+        # Trim the buffer by the removed amount.
+        self._buffer.trim(-count)
+
+    # Swap the internal buffer with another vector.
+    #
+    # This can useful to transfer "ownership" of the elements from
+    # one vector to another without needing to create copies.
+    def swap(other: Vector[T]):
+        buffer = self._buffer
+        self._buffer = other._buffer
+        other._buffer = buffer
+
+    # Grow the vector, if needed, to store `n` additional elements.
+    def _maybe_grow(n: Int64):
+        # Bail early if nothing is actually being added.
+        if n <= 0:
+            return
+
+        # Determine the needed length.
+        needed = self._buffer.length + n
+
+        # Bail early if there is currently sufficient capacity.
+        if needed <= self._buffer.capacity:
+            return
+
+        # Resize the buffer. This either doubles the current capacity,
+        # or uses the `needed` value, whichever is greater.
+        self._buffer.resize(max(self._buffer.capacity * 2, needed))
 
     # The internal buffer storage for the vector.
     _buffer: Buffer[T]
-
 
