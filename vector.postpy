@@ -5,8 +5,9 @@
 #------------------------------------------------------------------------------
 from .algorithm import max, min
 from .buffer import Buffer
+from .iterable import Iterable
 from .numbers import Int64
-from .range import Range
+from .sequence import Sequence
 
 
 #
