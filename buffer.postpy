@@ -147,3 +147,18 @@ class Buffer[T]:
     # in which case the stale elements will be subject to GC collection.
     def resize(capacity: Int64): ...
 
+    # Move elements in the buffer.
+    #
+    # This moves `count` elements from the `src` index to the `dst` index
+    # in a copy-overwrite fashion. Overlap is allowed and is well-handled.
+    #
+    # Negative indices wrap around at the end of the buffer.
+    #
+    # This may increase the `length` of the buffer but will not change
+    # its `capacity`.
+    #
+    # In no case will "gaps" be allowed to appear in the buffer.
+    #
+    # This method is *always* internally bounds-checked.
+    def move(src: Int64, dst: Int64, count: Int64): ...
+
