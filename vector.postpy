@@ -10,7 +10,10 @@ from .numbers import Int64
 from .sequence import Sequence
 
 
+# A `Vector` is a resizable sequence of elements.
 #
+# In reality, a `Vector` is an abstraction over a `Buffer` that guarantees
+# amortized constant resizing of the buffer.
 #
 # Note: For performance, a `Vector` never implicitly shrinks it's `capacity`.
 #       That must be done manually by user code by calling `shrink`.
@@ -48,17 +51,56 @@ class Vector[T]:
     def __init__(other: Iterable[T]):
         self._buffer = Buffer(other)
 
+    # Buffer constructor.
+    #
+    # This constructs a new vector from a pre-existing buffer.
+    #
+    # If `copy` is `false`, the new vector takes logical "ownership" of the
+    # buffer and adopts the buffer as its own. This is useful if user-code
+    # can ensure that there are no other external users of the buffer, which
+    # could otherwise lead to hard-to-debug behavior.
+    #
+    # If `copy` is `true`, the default, a copy of the buffer will be made.
+    def __init__(other: Buffer[T], copy = true):
+        self._buffer = Buffer(other) if copy else other
+
     # Retrieve an element from the vector.
     #
     # Negative indices wrap around from the end of the vector.
     def __getitem___(index: Int64) -> T:
         return self._buffer[index]
 
+    # Get a slice of the Vector.
+    #
+    # This method mimics the behavior of Python and will not fail due to
+    # indices in the slice being out-of-bounds. It returns a new vector
+    # based on a "best effort" approach.
+    def __getitem__(slice: Slice) -> Vector[T]:
+        return Vector(self._buffer[slice], false)
+
     # Set an element in the vector.
     #
     # Negative indices wrap around from the end of the vector.
     def __setitem__(index: Int64, value: T):
         self._buffer[index] = value
+
+    # Set a slice of the vector from another vector.
+    #
+    # This method mimics the behavior of `__getitem__(Slice)` and will not
+    # fail based on out-of-bounds or out-of-length access. It operates on a
+    # "best effort" approach.
+    def __setitem__(slice: Slice, other: Vector[T]):
+        self._buffer[slice] = other._buffer
+
+    # Set a slice of the vector from an object.
+    #
+    # This method mimics the behavior of `__getitem__(Slice)` and will not
+    # fail based on out-of-bounds or out-of-length access. It operates on a
+    # "best effort" approach.
+    def __setitem__(slice: Slice, other: Buffer[T]):
+    def __setitem__(slice: Slice, other: Sequence[T]):
+    def __setitem__(slice: Slice, other: Iterable[T]):
+        self._buffer[slice] = other
 
     # Trim the contents of the vector to the specified `length`.
     #
