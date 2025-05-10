@@ -15,6 +15,11 @@ from .sequence import Sequence
 # In reality, a `Vector` is an abstraction over a `Buffer` that guarantees
 # amortized constant resizing of the buffer.
 #
+# A `Vector` has constant-time access for all of its elements. It is most
+# efficient when adding and removing at the end of the vector. However, small
+# vectors will typically out-perform map types for random insertions due to
+# cache locality.
+#
 # Note: For performance, a `Vector` never implicitly shrinks it's `capacity`.
 #       That must be done manually by user code by calling `shrink`.
 class Vector[T]:
