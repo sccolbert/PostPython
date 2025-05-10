@@ -237,7 +237,7 @@ class Vector[T]:
         src = index + count
 
         # Perform a simple trim if possible.
-        if (src >= self._buffer.length):
+        if src >= self._buffer.length:
             self._buffer.trim(index)
             return
 
