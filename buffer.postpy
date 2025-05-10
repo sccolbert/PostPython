@@ -3,21 +3,20 @@
 #
 #
 #------------------------------------------------------------------------------
+from .iterable import Iterable
 from .numbers import Int64
+from .sequence import Sequence
+from .slice import Slice
 
 
-# The builtin type-and-size aware heap memory allocator for PostPython.
+# The builtin managed heap memory allocator for PostPython.
 #
-# A `Buffer` object is a reference type.
+# Most user code will not interact with a `Buffer` directly. Instead, it
+# will use one of the higher-level container types. This class primarily
+# exists for the implementation of those higher-level types.
 #
-# This type is intentionally low-level and does not provide any convenience
-# methods. This does two things:
-#   1) It makes it easier to implement and optimize by a backend.
-#   2) It discourages its use by user code and encourages users
-#      to use the higher level library containers instead.
-#
-# That said, this class *can* be used by low level code for finer-grained
-# control over memory allocation.
+# With the correct compiler flags, a `Buffer` will perform bounds-checking,
+# so it is generally not necessary for containers to perform their own.
 class Buffer[T]:
 
     # The capacity of the buffer in number of `T` elements.
@@ -30,53 +29,121 @@ class Buffer[T]:
     # The `length` is number of valid elements in the buffer.
     #
     # The `buffer` length will grow up to `capcity` as elements are assigned
-    # to `index == length` at which point it will cease to grow.
+    # to `index >= length` at which point it will cease to grow.
+    #
+    # It is not possible to create "gaps" in the buffer with uninitialized
+    # values.
     #
     # This is always `>= 0` and `<= capacity`.
     readonly length: Int64
 
-    # Construct a `Buffer` object to hold `capcity` elements.
+    # Construct a buffer with the given `capacity`.
     #
-    # The initial `length` of the buffer will be zero.
-    def __init__(capacity: Int64): ...
+    # The initial `length` of the buffer will be `0`.
+    def __init__(capcity: Int64): ...
 
     # Copy constructor.
     #
-    # The new buffer has a new internal buffer populated by the other buffer.
+    # The new buffer has internal memory populated by the other buffer.
+    #
+    # The `capacity` of the new buffer will equal its `length`.
     def __init__(other: Buffer[T]): ...
 
-    # Resize copy constructor with new `capacity`.
+    # Copy constructor with new `capacity`.
     #
-    # The new buffer has a new internal buffer populated by the buffer.
+    # The new buffer has internal memory populated by the other buffer.
     #
-    # Only logically "live" elements are copied into the new internal
-    # buffer subject to the new `capacity` value.
+    # The new `capacity` will equal the specified capacity. Only up-to
+    # `capacity` elements are copied from the other buffer.
     def __init__(other: Buffer[T], capacity: Int64): ...
+
+    # Sequence constructor.
+    #
+    # The new buffer has internal memory populated by the sequence.
+    #
+    # The `capacity` of the new buffer will equal its `length`.
+    def __init__(other: Sequence[T]): ...
+
+    # Sequence constructor with new `capacity`.
+    #
+    # The new buffer has internal memory populated by the sequence.
+    #
+    # The new `capacity` will equal the specified capacity. Only up-to
+    # `capacity` elements are copied from the sequence.
+    def __init__(other: Sequence[T], capacity: Int64): ...
+
+    # Iterable constructor.
+    #
+    # The new buffer has internal memory populated by the iterable.
+    #
+    # The `capacity` of the new buffer will equal its `length`.
+    def __init__(other: Iterable[T]): ...
+
+    # Iterable constructor with new `capacity`.
+    #
+    # The new buffer has internal memory populated by the iterable.
+    #
+    # The new `capacity` will equal the specified capacity. Only up-to
+    # `capacity` elements are copied from the sequence.
+    def __init__(other: Iterable[T], capacity: Int64): ...
 
     # Get the element at the specified buffer index.
     #
-    # Indexing at `< length` is guaranteed to be a valid object.
+    # Negative indices wrap around at the end of the buffer.
     #
-    # Indexing out-of-bounds is a programming error and the behavior
-    # is implementation-defined.
-    #
-    # Indexing with negative values is a programming error and the
-    # behavior is implementation defined.
+    # Compiler flags control bounds-checking of this access.
     def __getitem__(index: Int64) -> T: ...
+
+    # Get a slice of the buffer.
+    #
+    # This method mimics the behavior of Python and will not fail due to
+    # indices in the slice being out-of-bounds. It returns a new buffer
+    # based on a "best effort" approach.
+    def __getitem__(slice: Slice) -> Buffer[T]: ...
 
     # Set the element at the specified buffer index.
     #
-    # Assigning to `index < length` will overwrite the element at that
-    # index.
+    # Negative indices wrap around at the end of the buffer.
     #
-    # Assigning to `index == length` will grow the `length` by `1` provided
-    # there is sufficient `capacity`. If the buffer is full, the behavior
-    # implementation-defined.
-    #
-    # Assigning at `index > length` is a programming error and the behavior
-    # is implementation-defined.
-    #
-    # Indexing with negative values is a programming error and the behavior
-    # is implementation defined.
+    # Compiler flags control bounds-checking of this access.
     def __setitem__(index: Int64, value: T): ...
+
+    # Set a slice of the buffer from a buffer.
+    #
+    # This method mimics the behavior of `__getitem__(Slice)` and will not
+    # fail based on out-of-bounds or out-of-length access. It operates on a
+    # "best effort" approach.
+    def __setitem__(slice: Slice, other: Buffer[T]): ...
+
+    # Set a slice of the buffer from a `Sequence`.
+    #
+    # This method mimics the behavior of `__getitem__(Slice)` and will not
+    # fail based on out-of-bounds or out-of-length access. It operates on a
+    # "best effort" approach.
+    def __setitem__(slice: Slice, other: Sequence[T]): ...
+
+    # Set a slice of the buffer from an `Iterable`.
+    #
+    # This method mimics the behavior of `__getitem__(Slice)` and will not
+    # fail based on out-of-bounds or out-of-length access. It operates on a
+    # "best effort" approach.
+    def __setitem__(slice: Slice, other: Iterable[T]): ...
+
+    # Trim the `length` of the buffer to the given new value.
+    #
+    # If the new `length` is `>=` the current `length` this is a no-op.
+    #
+    # This method does not change the capacity of the buffer, nor does
+    # it reallocate memory. But it *does* allow the GC to collect stale
+    # values beyond the new `length`.
+    def trim(length: Int64): ...
+
+    # Resize the buffer to a new `capacity`.
+    #
+    # All current elements that are logically valid at the new `capacity`
+    # will remain valid.
+    #
+    # Resizing the buffer smaller may reduce the `length` of the buffer,
+    # in which case the stale elements will be subject to GC collection.
+    def resize(capacity: Int64): ...
 

@@ -24,17 +24,17 @@ class Tuple[T]:
 
     # Copy constructor.
     #
-    # The new tuple has a new internal buffer populated by the other tuple.
+    # The new tuple internal memory populated by the other tuple.
     def __init__(other: Tuple[T]): ...
 
     # Sequence constructor.
     #
-    # The new tuple has a new internal buffer populated by the sequence.
+    # The new tuple internal memory populated by the sequence.
     def __init__(other: Sequence[T]): ...
 
     # Iterable constructor.
     #
-    # The new tuple has a new internal buffer populated by the iterable.
+    # The new tuple internal memory populated by the iterable.
     def __init__(other: Iterable[T]): ...
 
     # Get the item at the specified index in the tuple.

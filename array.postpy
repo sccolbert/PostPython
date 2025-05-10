@@ -26,17 +26,17 @@ class Array[T]:
 
     # Copy constructor.
     #
-    # The new array has a new internal buffer populated by the other array.
+    # The new array has internal memory populated by the other array.
     def __init__(other: Array[T]): ...
 
     # Sequence constructor.
     #
-    # The new array has a new internal buffer populated by the sequence.
+    # The new array has internal memory populated by the sequence.
     def __init__(other: Sequence[T]): ...
 
     # Iterable constructor.
     #
-    # The new array has a new internal buffer populated by the iterable.
+    # The new array has internal memory populated by the iterable.
     def __init__(other: Iterable[T]): ...
 
     # Get the item at the specified index in the array.
