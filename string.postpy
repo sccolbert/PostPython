@@ -38,7 +38,7 @@ type Char:
 # `log(n)` gets, inserts, and deletes, while maintaining memory integrity.
 class String:
 
-    # The length of the string, in number of UTF-8 scharacters.
+    # The length of the string, in number of UTF-8 characters.
     #
     # This is always `>= 0`.
     const length: Int64
