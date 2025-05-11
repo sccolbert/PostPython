@@ -5,7 +5,7 @@
 #------------------------------------------------------------------------------
 from .iterable import Iterable
 from .numbers import UInt8, Int64
-from .sequence import Seque
+from .sequence import Sequence
 
 
 # The builtin type of a single character in a string.
@@ -66,4 +66,11 @@ class String:
     # indices in the slice being out-of-bounds. It returns a new string
     # based on a "best effort" approach.
     def __getitem__(slice: Slice) -> String: ...
+
+    # Concatenate this string with another `Char` or `String`.
+    #
+    # The implementation may choose the most efficient means to accomplish
+    # this operation, subject to the guaratees of the API.
+    def __add__(other: Char) -> String: ...
+    def __add__(other: String) -> String: ...
 
