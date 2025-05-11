@@ -1,0 +1,42 @@
+#------------------------------------------------------------------------------
+# POSTPython String Module
+#
+#
+#------------------------------------------------------------------------------
+from .array import Array
+from .iterable import Iterable
+from .numbers import Uint8
+from .sequence import Sequence
+
+
+i# A UTF-8 Encoded string.
+class String:
+
+    # The length of the string, in number of elements.
+    #
+    # This is always `>= 0`.
+    const length: Int64
+
+    # Default constructor.
+    def __init__(): ...
+
+    # Copy constructor.
+    #
+    # The new string has internal memory populated by the other object.
+    def __init__(other: Array[String]): ...
+    def __init__(other: Sequence[String]): ...
+    def __init__(other: Iterable[String]): ...
+
+    # Get the character at the specified index in the string.
+    #
+    # Negative indexing wraps around from the end of the string.
+    #
+    # Indexing out-of-bounds is implementation-defined.
+    def __getitem__(index: Int64) -> String: ...
+
+    # Get a slice of the string.
+    #
+    # This method mimics the behavior of Python and will not fail due to
+    # indices in the slice being out-of-bounds. It returns a new string
+    # based on a "best effort" approach.
+    def __getitem__(slice: Slice) -> String: ...
