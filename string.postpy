@@ -33,6 +33,9 @@ type Char:
 # code. So, it makes sense to separate runtime handling of Unicode from the
 # compile-time handling of bytes. i.e. there is an "explicit" cost for
 # handling unicode strings, which require much more overhead.
+#
+# The default C-implementation of a `String` is a "rope" which affords
+# `log(n)` gets, inserts, and deletes, while maintaining memory integrity.
 class String:
 
     # The length of the string, in number of UTF-8 scharacters.
