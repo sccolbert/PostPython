@@ -3,7 +3,6 @@
 #
 #
 #------------------------------------------------------------------------------
-from .array import Array
 from .iterable import Iterable
 from .numbers import Uint8
 from .sequence import Sequence
@@ -23,7 +22,7 @@ class String:
     # Copy constructor.
     #
     # The new string has internal memory populated by the other object.
-    def __init__(other: Array[String]): ...
+    def __init__(other: String): ...
     def __init__(other: Sequence[String]): ...
     def __init__(other: Iterable[String]): ...
 
