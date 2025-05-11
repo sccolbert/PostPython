@@ -21,9 +21,9 @@ type Char:
     def __convert__() -> UInt8: ...
 
 
-# The builtin UTF-8 Encoded string type.
+# The builtin UTF-8 Encoded `String` type.
 #
-# A string is an immutable sequence of type `Char`.
+# A `String` is an immutable sequence of type `Char`.
 #
 # Fundamentally, a `String` is a sequence of UTF-8 encoded bytes.
 # A to-be-implemented unicode library will handle covertering from
@@ -32,7 +32,7 @@ type Char:
 # The POSTPython language only allows UTF-8 ASCII characters in the source
 # code. So, it makes sense to separate runtime handling of Unicode from the
 # compile-time handling of bytes. i.e. there is an "explicit" cost for
-# handling unicode strings, which require much more overhead.
+# handling unicode strings, which requires substantially more overhead.
 #
 # The default C-implementation of a `String` is a "rope" which affords
 # `log(n)` gets, inserts, and deletes, while maintaining memory integrity.
