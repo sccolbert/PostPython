@@ -4,14 +4,38 @@
 #
 #------------------------------------------------------------------------------
 from .iterable import Iterable
-from .numbers import Uint8
-from .sequence import Sequence
+from .numbers import UInt8, Int64
+from .sequence import Seque
 
 
-i# A UTF-8 Encoded string.
+# The builtin type of a single character in a string.
+#
+# A `Char` is fundamentally a `UInt8` value interpreted as ASCII.
+type Char:
+
+    # Copy constructor.
+    def __init__(value: UInt8): ...
+    def __init__(value: Char): ...
+
+    # Unsigned conversion.
+    def __convert__() -> UInt8: ...
+
+
+# The builtin UTF-8 Encoded string type.
+#
+# A string is an immutable sequence of type `Char`.
+#
+# Fundamentally, a `String` is a sequence of UTF-8 encoded bytes.
+# A to-be-implemented unicode library will handle covertering from
+# `String` to unicode-aware code points for output.
+#
+# The POSTPython language only allows UTF-8 ASCII characters in the source
+# code. So, it makes sense to separate runtime handling of Unicode from the
+# compile-time handling of bytes. i.e. there is an "explicit" cost for
+# handling unicode strings, which require much more overhead.
 class String:
 
-    # The length of the string, in number of elements.
+    # The length of the string, in number of UTF-8 scharacters.
     #
     # This is always `>= 0`.
     const length: Int64
@@ -22,6 +46,9 @@ class String:
     # Copy constructor.
     #
     # The new string has internal memory populated by the other object.
+    def __init__(other: Char): ...
+    def __init__(other: Sequence[Char]): ...
+    def __init__(other: Iterable[Char]): ...
     def __init__(other: String): ...
     def __init__(other: Sequence[String]): ...
     def __init__(other: Iterable[String]): ...
@@ -31,7 +58,7 @@ class String:
     # Negative indexing wraps around from the end of the string.
     #
     # Indexing out-of-bounds is implementation-defined.
-    def __getitem__(index: Int64) -> String: ...
+    def __getitem__(index: Int64) -> Char: ...
 
     # Get a slice of the string.
     #
@@ -39,3 +66,4 @@ class String:
     # indices in the slice being out-of-bounds. It returns a new string
     # based on a "best effort" approach.
     def __getitem__(slice: Slice) -> String: ...
+
