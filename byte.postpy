@@ -1,0 +1,67 @@
+#------------------------------------------------------------------------------
+# POSTPython Byte Module
+#
+#
+#------------------------------------------------------------------------------
+from .bool import Bool
+from .numbers import Int8, UInt8
+
+
+# The builtin 8-bit byte type.
+#
+# A byte is explicitly not a number, and therefore does not support normal
+# number arithmetic (as that would imply an interpretation of the bits).
+#
+# Only bitwise operators and equality comparisons are supported. However,
+# a `Byte` can be freely/implicitly converted to a signed or unsigned
+# 8-bit integer where needed. This performed by bitwise copying.
+#
+# To convert an integer to a `Byte`, the constructor must be called. This
+# construction is performed by bitwise copying.
+type Byte:
+    # Default constructor.
+    #
+    # Initialized to `0`.
+    def __init__(): ...
+
+    # Copy constructor.
+    def __init__(other: Byte): ...
+    def __init__(other: Int8): ...
+    def __init__(other: UInt8): ...
+
+    # Bitwise left shift. The `<<` operator.
+    def __lshift__(n: UInt8) -> Byte: ...
+
+    # Bitwise right shift. The `>>` operator.
+    def __rshift__(n: UInt8) -> Byte: ...
+
+    # Bitwise left rotation. The `<<<` operator.
+    def __lrot__(n: UInt8): -> Byte: ...
+
+    # Bitwise right rotation. The `>>>` operator.
+    def __rrot__(n: UInt8): -> Byte: ...
+
+    # Bitwise `and`. The `&` operator.
+    def __and__(other: Byte) -> Byte: ...
+
+    # Bitwise `or`. The `|` operator.
+    def __or__(other: Byte) -> Byte: ...
+
+    # Bitwise `xor`. The `^` operator.
+    def __xor__(other: Byte) -> Byte: ...
+
+    # Bitwise `not`. The `~` operator.
+    def __not__(): -> Byte: ...
+
+    # Equality comparison. The `==` operator.
+    def __eq__(other: Btye) -> Bool: ...
+
+    # Equality comparison. The `!=` operator.
+    def __ne__(other: Btye) -> Bool: ...
+
+    # Unsigned Type Conversions
+    def __convert__() -> UInt8: ...
+
+    # Signed Type Conversion
+    def __convert__() -> Int8: ...
+

@@ -3,65 +3,58 @@
 #
 #
 #------------------------------------------------------------------------------
+from .byte import Byte
 from .iterable import Iterable
-from .numbers import UInt8, Int64
+from .numbers import Int64
 from .sequence import Sequence
 
 
-# The builtin type of a single character in a string.
+# The builtin `String` type.
 #
-# A `Char` is fundamentally a `UInt8` value interpreted as ASCII.
-type Char:
-
-    # Copy constructor.
-    def __init__(value: UInt8): ...
-    def __init__(value: Char): ...
-
-    # Unsigned conversion.
-    def __convert__() -> UInt8: ...
-
-
-# The builtin UTF-8 Encoded `String` type.
+# A `String` is nothing more than an immutable sequence of `Byte`. The only
+# functionality provided by the core class is iteration and concatenation.
 #
-# A `String` is an immutable sequence of type `Char`.
+# All other functionality is provided by libraries, which understand the
+# distinction between bytes and UTF-8 encoding.
 #
-# Fundamentally, a `String` is a sequence of UTF-8 encoded bytes.
-# A to-be-implemented unicode library will handle covertering from
-# `String` to unicode-aware code points for output.
+# When a `String` is used to hold textual data, that data shall be encoded
+# in `UTF-8`. String literals in POSTPython source code are UTF-8 encoded.
+# All standard library functions assume and operate on this principle.
 #
-# The POSTPython language only allows UTF-8 ASCII characters in the source
-# code. So, it makes sense to separate runtime handling of Unicode from the
-# compile-time handling of bytes. i.e. there is an "explicit" cost for
-# handling unicode strings, which requires substantially more overhead.
+# Therefore, the `String` class implicitly supports Unicode by way of the
+# `UTF-8` encoding. It also degrades gracefully to C-strings under the hood.
 #
-# The default C-implementation of a `String` is a "rope" which affords
-# `log(n)` gets, inserts, and deletes, while maintaining memory integrity.
+# The runtime libraries automatically handle the conversion between platform
+# encoding and UTF-8, so user code should not have to worry about this for
+# most use cases.
 class String:
 
-    # The length of the string, in number of UTF-8 characters.
+    # The length of the string, in number of bytes.
     #
     # This is always `>= 0`.
     const length: Int64
 
     # Default constructor.
+    #
+    # Creates an empty string.
     def __init__(): ...
 
     # Copy constructor.
     #
     # The new string has internal memory populated by the other object.
-    def __init__(other: Char): ...
-    def __init__(other: Sequence[Char]): ...
-    def __init__(other: Iterable[Char]): ...
+    def __init__(other: Byte): ...
+    def __init__(other: Sequence[Byte]): ...
+    def __init__(other: Iterable[Byte]): ...
     def __init__(other: String): ...
     def __init__(other: Sequence[String]): ...
     def __init__(other: Iterable[String]): ...
 
-    # Get the character at the specified index in the string.
+    # Get the byte at the specified index in the string.
     #
     # Negative indexing wraps around from the end of the string.
     #
     # Indexing out-of-bounds is implementation-defined.
-    def __getitem__(index: Int64) -> Char: ...
+    def __getitem__(index: Int64) -> Byte: ...
 
     # Get a slice of the string.
     #
@@ -70,13 +63,13 @@ class String:
     # based on a "best effort" approach.
     def __getitem__(slice: Slice) -> String: ...
 
-    # Concatenate this string with another `Char` or `String`.
+    # Concatenate this string with another `Byte` or `String`.
     #
     # The implementation may choose the most efficient means to accomplish
     # this operation, subject to the guarantees of the API.
-    def __add__(other: Char) -> String: ...
-    def __add__(other: Sequence[Char]) -> String: ...
-    def __add__(other: Iterable[Char]) -> String: ...
+    def __add__(other: Byte) -> String: ...
+    def __add__(other: Sequence[Byte]) -> String: ...
+    def __add__(other: Iterable[Byte]) -> String: ...
     def __add__(other: String) -> String: ...
     def __add__(other: Sequence[String]) -> String: ...
     def __add__(other: Iterable[String]) -> String: ...
