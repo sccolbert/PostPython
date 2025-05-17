@@ -72,7 +72,7 @@ class Vector[T]:
     # Retrieve an element from the vector.
     #
     # Negative indices wrap around from the end of the vector.
-    def __getitem___(index: Int64) -> T:
+    def __getitem__(index: Int64) -> T:
         return self._buffer[index]
 
     # Get a slice of the Vector.
