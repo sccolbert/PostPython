@@ -8,7 +8,6 @@ same semantics as `C` value types in that they are passed by value and are
 structurally copied on assignment. The user does not have control of the
 copy-on-assignment behavior.
 
-
 Objects declared with `class` are reference types. They are always allocated
 on the heap. They have the same semantics as `C` pointers in that they are
 passed by reference and assigned by reference. Reference types are subject
@@ -17,15 +16,16 @@ to garbage collection. Reference types may hold value types as fields.
 `self` is implicit in method bodies. This may seem to violate the rule that
 "explicit is better than implicit", but this is less typing for everyone
 and the alternative is to have the runtime "implicitly" pass `self` as the
-first argument to all methods.
+first argument to all methods, which is not "explicit" at all.
 
 We will have exceptions, but only for exceptional circumstances. We will
 avoid using exceptions for control flow.
 
 Objects of `type` and `class` are nominally typed. If code expects a
 nominal type, it will only receive that nominal type. "duck-typing" one
-type to fit a nominal type is not allowed. Use `protocol` types for
-"duck-typing".
+nominal type to fit another nominal type is not allowed. Use `protocol` 
+types for "duck-typing". A "nominal" type can fit a "protocol" type, but
+not vice-versa".
 
 A `protocol` type is any object that *structurally* meets the definition of
 a `protocol`. Think of this as "explicit" duck-typing, or an interface. This
@@ -39,23 +39,23 @@ easier to optimize since the structure of "nominal" types is known ahead
 of time. Also maps better to C. Also easier to teach: value types are just
 that. Class types are references, with no virtualization. Protocols then
 become the "one-way" to handle virtualization. The more I think about this,
-the better the idea becomes. It's not "pythonic", but I having worked on a
+the better the idea becomes. It's not "pythonic", but having worked on a
 production 4+M line codebase of Python, this would prevent a lot of problems
+at scale.
 
 "Dunder" methods are used to support the language syntax and runtime. They
-are not visible outside of the runtime. This is compiler-enforced.
+are not callable outside of the runtime. This is compiler-enforced.
 
 "Leading-underscore" names are private to the nominal `type` or `class`.
 
 At the module level, "Leading-underscore" names are private to the module
 and cannot be exported.
 
-Destructors would be nice, but that increases implementation complexity
-and doesn't really make sense for GC'd reference types. Modern GC systems
-support "finalizers" that could work. But really I want something that
-enables something like RAII in C++ for guaranteeing cleanup on function
-exit. Maybe we have some sort of "exit" block that is guranteed to be
-called on function exit.
+Upon reading up more about the problems with "finalizers" in a managed
+GC environment, and seeing the less-than-elegant solution that the new
+JS `dispose` spec is implementing. I think I'm gonna stick with the Python
+`with` context managers for cleanup, and not explicitly expose any finalizer. 
+That will make implementation much easier, and cleanup much more explicit.
 
 `readonly` attributes. Current thoughts are that they are `readonly` by
 code which "consumes" the type or class. They can be modified by the
@@ -63,19 +63,19 @@ type or class itself, but not by subclasses. `const` attributes are constant
 and can never be changed after initialization, by anything. Note that a
 `const` attribute can decay to `readonly` to meet a protocol.
 
-Questions:
+Addenda to the above, it might be better to have protocols *only* have 
+methods. The "one true way" to do things. This may remove the need to have
+the concept of "const" or "readonly" variables/fields entirely. It might be
+enough to simply have private fields, and objects export their functionality
+entirely through methods.
 
-- The types declared in this file are always available as "magic" builtins.
-  They do not need to be imported. Therefore, do we allow shadowing of these
-  type names by user code, or not worry about it because these types can
-  also be imported explicitly?
+
+Questions:
 
 - Implicit default constructors?
 
-- Implicit default destructor?
-
 - Syntax for lists, dicts, sets, and their underlying types? I don't like
-  the Python `list` API because it is not uniform. We have an opportunity
+  the Python `list` API because it is not symmetric. We have an opportunity
   to have better APIs for the builtin syntactic types. I'm thinking that
   the syntax should support only fixed-size objects. For example, the
   tuple sytax is a fixed-size allocation. I'm thinking of using the "list"
@@ -84,5 +84,4 @@ Questions:
   implemented the "standard library", ala "Vector", "Dict", "Set", etc...
 
 - Builtin string type. Will be UTF-8, but Unicode aware?
-
 
