@@ -162,7 +162,7 @@ class Vector[T]:
     # This will not change the `capacity` of the vector.
     def pop_back() -> T:
         # Fetch the last element.
-        value = self._buffer[-1]
+        value: auto = self._buffer[-1]
 
         # Trim the length of the buffer.
         self._buffer.trim(-1)
@@ -238,11 +238,11 @@ class Vector[T]:
         self._maybe_grow(other.length)
 
         # Calculate the stop index, exclusive.
-        stop = index + other.length
+        stop: auto = index + other.length
 
         # Move elements forward in the buffer if needed.
         if index < self._buffer.length:
-            count = self._buffer.length - index
+            count: auto = self._buffer.length - index
             self._buffer.move(index, stop, count)
 
         # Write the elements to the buffer.
@@ -274,14 +274,14 @@ class Vector[T]:
             panic "Invalid `index` for `Vector.remove()`"
 
         # Clamp the count to the minimum logical value.
-        count = min(count, self._buffer.length - index)
+        count: auto = min(count, self._buffer.length - index)
 
         # Bail early if there is nothing to remove.
         if count <= 0:
             return
 
         # Calculate the src index for a move.
-        src = index + count
+        src: auto = index + count
 
         # Perform a simple trim if possible.
         if src >= self._buffer.length:
@@ -289,7 +289,7 @@ class Vector[T]:
             return
 
         # Move remaining elements backward in the buffer.
-        tailcount = self._buffer.length - src
+        tailcount: auto = self._buffer.length - src
         self._buffer.move(src, index, tailcount)
 
         # Trim the buffer by the removed amount.
@@ -311,7 +311,7 @@ class Vector[T]:
             return
 
         # Determine the needed length.
-        needed = self._buffer.length + n
+        needed: auto = self._buffer.length + n
 
         # Bail early if there is currently sufficient capacity.
         if needed <= self._buffer.capacity:

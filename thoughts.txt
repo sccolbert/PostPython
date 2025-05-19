@@ -3,15 +3,18 @@
 General Thoughts:
 
 Objects declared with `type` are value types. They are always allocated on
-the stack or within the allocated space of another object. They have the
-same semantics as `C` value types in that they are passed by value and are
-structurally copied on assignment. The user does not have control of the
-copy-on-assignment behavior.
+the stack or within the allocated space of another object. Just like a number,
+they are immutable once initialized (which must happen fully by a constructor).
+This means that internally they can be efficiently passed by reference to
+functions, but the function cannot mutate them or their fields. They can also
+be efficiently assigned by reference, since they cannot be mutated.
 
 Objects declared with `class` are reference types. They are always allocated
 on the heap. They have the same semantics as `C` pointers in that they are
 passed by reference and assigned by reference. Reference types are subject
-to garbage collection. Reference types may hold value types as fields.
+to garbage collection. Reference types may hold value types as fields. These
+value-type fields can be assigned, but only to a derived-copy of the original
+type. The type object itself is still immutable.
 
 `self` is implicit in method bodies. This may seem to violate the rule that
 "explicit is better than implicit", but this is less typing for everyone
