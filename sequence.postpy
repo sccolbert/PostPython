@@ -18,7 +18,9 @@ from .numbers import Int64
 protocol Sequence[T]:
 
     # The length of the sequence, in number of elements.
-    readonly length: Int64
+    #
+    # This is always `>= 0`.
+    def __len__() -> Int64: ...
 
     # Get the item at the specified index in the sequence.
     #

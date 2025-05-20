@@ -4,58 +4,13 @@
 #
 #------------------------------------------------------------------------------
 from .iterable import Iterable, Iterator
-from .numbers import Int64
-from .option import Option
 from .sequence import Sequence
 
 
-# Create an iterator from an `Iterable` object.
+# Create an iterator from an `Iterable` or `Sequence` object.
 #
-# This function simply calls the `iter()` method of the `Iterable` object.
-# It exists so that the `Sequence` overload version of this function allows
-# user code to uniformally create iterators from iterables and sequences.
-def iter[T](iterable: Iterable[T]) -> Iterator[T]:
-    return iterable.iter()
-
-
-# Create an iterator from a `Sequence` object.
-#
-# This wraps any object implementing the `Sequence` protocol with a
-# `SequenceIterator` so that it can be treated like any other iterator.
-def iter[T](sequence: Sequence[T]) -> SequenceIterator[T]:
-    return SequenceIterator(sequence)
-
-
-# The `SequenceIterator` object.
-#
-# This object can be used to wrap any object that implements the `Sequence`
-# protocol to meet the `Iterator` protocol.
-type SequenceIterator[T]:
-
-    # Construct an iterator for a `Sequence` object.
-    __init__(sequence: Sequence[T]):
-        self._sequence = sequence
-        self._index = 0
-
-    # Implement the `Iterable` protocol.
-    def iter() -> SequenceIterator[T]:
-        return self
-
-    # Get the next elmenent from the iterator.
-    def next() -> Option[T]:
-        # Get the target index of the value.
-        index = self._index
-
-        # Return an invalid option if the index is out of range.
-        if index >= self._sequence.length:
-            return Option[T]()
-
-        # Increment the internal index.
-        self._index += 1
-
-        # Return the target value of the iterator.
-        return Option(self._sequence[index])
-
-    _sequence: Sequence[T]
-    _index: Int64
+# This builtin function automatically wraps an `Iterable` or `Sequence`
+# object with an object that implements the `Iterator` protocol.
+def iter[T](iterable: Iterable[T]) -> Iterator[T]: ...
+def iter[T](sequence: Sequence[T]) -> Iterator[T]: ...
 

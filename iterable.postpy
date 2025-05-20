@@ -18,7 +18,7 @@ from .option import Option
 protocol Iterable[T]:
 
     # Produce the `Iterator` object for the underlying collection.
-    def iter() -> Iterator[T]: ...
+    def __iter__() -> Iterator[T]: ...
 
 
 # The `Iterator` protocol.
@@ -31,10 +31,10 @@ protocol Iterator[T]:
     # Iterators themselves implement the `Iterable` protocol.
     #
     # Typically, an iterator will just return itself.
-    def iter() -> Iterator[T]: ...
+    def __iter__() -> Iterator[T]: ...
 
     # Get the next element from the iterator.
     #
     # An exhausted iterator returns an invalid `Option` object.
-    def next() -> Option[T]: ...
+    def __next__() -> Option[T]: ...
 

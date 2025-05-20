@@ -14,20 +14,15 @@ from .panic import panic
 type Range:
 	
 	# The starting value of the range, inclusive.
-	const start: Int64
+	start: Int64
 
 	# The ending value of the range, exclusive.
-	const stop: Int64
+	stop: Int64
 
 	# The step size between values in the range.
 	#
 	# This will never be zero.
-	const step: Int64
-
-	# The length of the range.
-	#
-	# This will be always be `>= 0`.
-	const length: Int64
+	step: Int64
 
 	# Construct a `Range` with a `stop` value.
 	#
@@ -61,10 +56,16 @@ type Range:
 		# TODO ensure computed length is valid for signed types and double
 		# check for negative start/stop/step logic. It's likely that this
 		# is wrong at the moment.
-		length = (stop - start) / step
+		length: auto = (stop - start) / step
 
 		# Clamp the length to `>= 0`.
-		self.length = 0 if length < 0 else n
+		self._length = 0 if length < 0 else n
+
+	# The length of the range.
+	#
+	# This will be always be `>= 0`.
+	def __len__() -> Int64:
+		return self._length
 
 	# Get the value of the range at the specified index.
 	#
@@ -74,10 +75,10 @@ type Range:
 	def __getitem__(index: Int64) -> Int64:
 		# Wrap around for negative indices.
 		if index < 0:
-			index += self.length
+			index += self._length
 
 		# Indexing a `Range` out-of-bounds is a programming error.
-		if index < 0 or index >= self.length:
+		if index < 0 or index >= self._length:
 			panic "Range `index` out of range"
 
 		# Compute the indexed value.
@@ -86,4 +87,6 @@ type Range:
 		# check for negative start/stop/step logic. It's likely that this
 		# is wrong at the moment.
 		return self.start + index * self.step
+
+	_length: Int64
 

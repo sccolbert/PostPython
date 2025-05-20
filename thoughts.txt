@@ -2,6 +2,16 @@
 
 General Thoughts:
 
+Varibles:
+  - Variables must be initialized with an assignment statement that includes
+    a type, even if that type is `auto`. eg. `foo: auto = some_expr()`
+
+  - Variables cannot be redefined or change their type, but they can be
+    reassigned to a value of the same type.
+
+  - Name shadowing: still thinking thru this...
+
+
 Objects declared with `type` are value types. They are always allocated on
 the stack or within the allocated space of another object. Just like a number,
 they are immutable once initialized (which must happen fully by a constructor).

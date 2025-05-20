@@ -16,11 +16,6 @@ from .slice import Slice
 # Corresponds to the `[a, b, c]` literal syntax.
 class Array[T]:
 
-    # The length of the array, in number of elements.
-    #
-    # This is always `>= 0`.
-    const length: Int64
-
     # Default constructor.
     def __init__(): ...
 
@@ -30,6 +25,11 @@ class Array[T]:
     def __init__(other: Array[T]): ...
     def __init__(other: Sequence[T]): ...
     def __init__(other: Iterable[T]): ...
+
+    # The length of the array, in number of elements.
+    #
+    # This is always `>= 0`.
+    def __len__: Int64 ...
 
     # Get the item at the specified index in the array.
     #

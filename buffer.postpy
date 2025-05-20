@@ -19,24 +19,6 @@ from .slice import Slice
 # so it is generally not necessary for containers to perform their own.
 class Buffer[T]:
 
-    # The capacity of the buffer in number of `T` elements.
-    #
-    # This value is always `>= 0`.
-    const capacity: Int64
-
-    # The length of the buffer in number of `T` elements.
-    #
-    # The `length` is number of valid elements in the buffer.
-    #
-    # The buffer `length` will grow up to `capacity` as elements are assigned
-    # to `index == length` at which point it will cease to grow.
-    #
-    # It is not possible to create "gaps" in the buffer with uninitialized
-    # values.
-    #
-    # This is always `>= 0` and `<= capacity`.
-    readonly length: Int64
-
     # Construct a buffer with the given `capacity`.
     #
     # The initial `length` of the buffer will be `0`.
@@ -50,6 +32,19 @@ class Buffer[T]:
     def __init__(other: Buffer[T]): ...
     def __init__(other: Sequence[T]): ...
     def __init__(other: Iterable[T]): ...
+
+    # The length of the buffer in number of `T` elements.
+    #
+    # The `len` is number of valid elements in the buffer.
+    #
+    # The buffer `len` will grow up to `capacity` as elements are assigned
+    # to `index == length` at which point it will cease to grow.
+    #
+    # It is not possible to create "gaps" in the buffer with uninitialized
+    # values.
+    #
+    # This is always `>= 0` and `<= capacity`.
+    def __len__() -> Int64 ->: ...
 
     # Get the element at the specified buffer index.
     #
@@ -80,6 +75,11 @@ class Buffer[T]:
     def __setitem__(slice: Slice, other: Buffer[T]): ...
     def __setitem__(slice: Slice, other: Sequence[T]): ...
     def __setitem__(slice: Slice, other: Iterable[T]): ...
+
+    # The capacity of the buffer in number of `T` elements.
+    #
+    # This value is always `>= 0`.
+    def capacity() -> Int64: ...
 
     # Trim the `length` of the buffer to the given new value.
     #
